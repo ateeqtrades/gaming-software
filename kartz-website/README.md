@@ -1,10 +1,10 @@
 # Kartz PK website
 
-A single page website for Kartz PK (go karting). One file, no build step: open `index.html` in a browser or drop it on any static host (Vercel, Netlify, GitHub Pages).
+A single page website for Kartz PK (go karting). No build step. Deploy this folder to Vercel; `vercel.json` adds the security headers. See `SECURITY.md` for the security review.
 
 ## Placeholders to replace before going live
 
-All business details sit in the `KARTZ` object near the bottom of `index.html`:
+All business details sit in the `KARTZ` object at the top of `app.js`:
 
 | Field | Now |
 | --- | --- |
