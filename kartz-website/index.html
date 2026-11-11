@@ -1,0 +1,685 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kartz PK | Go Karting in Pakistan</title>
+<meta name="description" content="Kartz PK: indoor go karting, timed races, birthdays and corporate events. Book your slot online.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,800;1,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ==== EDIT THESE FIRST ==== see README.md for the full list of placeholders */
+  :root {
+    --bg: #0d0e10;
+    --bg-2: #16181c;
+    --bg-3: #1f2228;
+    --line: #2b2f37;
+    --text: #f2f3f5;
+    --muted: #9aa0ab;
+    --accent: #ffcc00;      /* racing yellow */
+    --accent-ink: #111111;
+    --hot: #ff3b30;         /* race red */
+    --radius: 14px;
+    --max: 1160px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, system-ui, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 20px; }
+  h1, h2, h3, .display {
+    font-family: "Barlow Condensed", Impact, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: .01em;
+    line-height: .95;
+  }
+  h2 { font-size: clamp(2.4rem, 6vw, 4rem); font-weight: 800; }
+  h3 { font-size: 1.7rem; font-weight: 800; }
+  .kicker {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: .8rem; font-weight: 600; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 14px;
+  }
+  .kicker::before { content: ""; width: 26px; height: 3px; background: var(--accent); }
+  .lead { color: var(--muted); font-size: 1.08rem; max-width: 620px; margin-top: 16px; }
+  section { padding: 96px 0; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 15px 26px; border-radius: 999px; border: 2px solid transparent;
+    font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 1.15rem;
+    text-transform: uppercase; letter-spacing: .04em; text-decoration: none; cursor: pointer;
+    transition: transform .15s ease, background .15s ease, border-color .15s ease;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { background: #ffd83d; }
+  .btn-ghost { border-color: var(--line); color: var(--text); background: transparent; }
+  .btn-ghost:hover { border-color: var(--text); }
+
+  /* Checkered strip */
+  .checker {
+    height: 18px;
+    background-image:
+      linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%),
+      linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%);
+    background-size: 18px 18px;
+    background-position: 0 0, 9px 9px;
+    background-color: #000;
+    opacity: .9;
+  }
+
+  /* Nav */
+  header.nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(13,14,16,.86); backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+  .logo {
+    font-family: "Barlow Condensed", sans-serif; font-style: italic; font-weight: 800;
+    font-size: 1.9rem; text-decoration: none; text-transform: uppercase; letter-spacing: .02em;
+  }
+  .logo span { color: var(--accent); }
+  .logo small { font-size: .9rem; color: var(--muted); margin-left: 4px; font-style: normal; }
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--muted); font-weight: 500; font-size: .95rem; }
+  .nav-links a:hover { color: var(--text); }
+  .nav .btn { padding: 10px 18px; font-size: 1rem; }
+  .menu-btn { display: none; background: none; border: 0; color: var(--text); font-size: 1.6rem; cursor: pointer; }
+
+  /* Hero */
+  .hero { position: relative; padding: 110px 0 90px; overflow: hidden; }
+  .hero::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(900px 500px at 85% 20%, rgba(255,204,0,.16), transparent 60%),
+      radial-gradient(700px 400px at 0% 100%, rgba(255,59,48,.14), transparent 60%);
+  }
+  .track-lines {
+    position: absolute; right: -120px; top: 40px; width: 720px; height: 720px; opacity: .22;
+    pointer-events: none;
+  }
+  .hero .wrap { position: relative; }
+  .hero h1 {
+    font-size: clamp(3.6rem, 12vw, 8.5rem); font-weight: 800; font-style: italic;
+    max-width: 900px;
+  }
+  .hero h1 em { color: var(--accent); font-style: italic; }
+  .hero .lead { font-size: 1.2rem; }
+  .hero-ctas { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
+  .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+    margin-top: 70px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .stat { background: var(--bg-2); padding: 22px 20px; }
+  .stat b { display: block; font-family: "Barlow Condensed", sans-serif; font-size: 2.6rem; font-weight: 800; line-height: 1; }
+  .stat span { color: var(--muted); font-size: .9rem; }
+
+  /* Experiences */
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 48px; }
+  .card {
+    background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 26px; display: flex; flex-direction: column; gap: 12px;
+    transition: border-color .2s ease, transform .2s ease;
+  }
+  .card:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .card .icon {
+    width: 50px; height: 50px; border-radius: 12px; display: grid; place-items: center;
+    background: rgba(255,204,0,.12); color: var(--accent);
+  }
+  .card p { color: var(--muted); font-size: .96rem; }
+  .card .meta { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--line); font-size: .88rem; color: var(--muted); }
+  .card .meta b { color: var(--text); }
+
+  /* Steps */
+  .steps-sec { background: var(--bg-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; margin-top: 48px; counter-reset: s; }
+  .step { position: relative; padding-top: 70px; }
+  .step::before {
+    counter-increment: s; content: "0" counter(s);
+    position: absolute; top: 0; left: 0;
+    font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-style: italic; font-size: 4rem; line-height: 1;
+    color: transparent; -webkit-text-stroke: 1.5px var(--accent);
+  }
+  .step h3 { font-size: 1.4rem; margin-bottom: 8px; }
+  .step p { color: var(--muted); font-size: .95rem; }
+
+  /* Pricing */
+  .pricing { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 48px; align-items: stretch; }
+  .price {
+    position: relative; background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 30px; display: flex; flex-direction: column;
+  }
+  .price.featured { border: 2px solid var(--accent); background: linear-gradient(180deg, rgba(255,204,0,.07), var(--bg-2) 40%); }
+  .badge {
+    position: absolute; top: -13px; left: 30px; background: var(--accent); color: var(--accent-ink);
+    font-weight: 700; font-size: .75rem; letter-spacing: .1em; text-transform: uppercase;
+    padding: 5px 12px; border-radius: 999px;
+  }
+  .price .amount { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 3.4rem; line-height: 1; margin: 14px 0 4px; }
+  .price .amount small { font-size: 1.2rem; color: var(--muted); font-weight: 600; }
+  .price .per { color: var(--muted); font-size: .9rem; }
+  .price ul { list-style: none; margin: 22px 0 28px; display: grid; gap: 10px; }
+  .price li { display: flex; gap: 10px; font-size: .96rem; }
+  .price li::before { content: "✓"; color: var(--accent); font-weight: 700; }
+  .price .btn { margin-top: auto; }
+  .note { color: var(--muted); font-size: .85rem; margin-top: 18px; }
+
+  /* Leaderboard */
+  .lb-wrap { display: grid; grid-template-columns: 1fr 1.2fr; gap: 50px; align-items: center; }
+  .lb { background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .lb-head { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--line); }
+  .lb-tabs { display: flex; gap: 6px; }
+  .lb-tabs button {
+    background: var(--bg-3); color: var(--muted); border: 0; border-radius: 999px; padding: 7px 14px;
+    font: 600 .82rem Inter, sans-serif; cursor: pointer;
+  }
+  .lb-tabs button.on { background: var(--accent); color: var(--accent-ink); }
+  .live { display: inline-flex; align-items: center; gap: 8px; font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; }
+  .live::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--hot); animation: pulse 1.4s infinite; }
+  @keyframes pulse { 50% { opacity: .25; } }
+  table { width: 100%; border-collapse: collapse; }
+  td { padding: 14px 20px; border-bottom: 1px solid var(--line); font-size: .96rem; }
+  tr:last-child td { border-bottom: 0; }
+  td.pos { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 1.4rem; width: 60px; color: var(--muted); }
+  tr:nth-child(1) td.pos { color: var(--accent); }
+  td.time { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+  td.kart { color: var(--muted); font-size: .85rem; }
+
+  /* Events */
+  .events { background: var(--bg-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 48px; }
+  .event {
+    position: relative; border-radius: var(--radius); overflow: hidden; min-height: 280px;
+    padding: 32px; display: flex; flex-direction: column; justify-content: flex-end;
+    border: 1px solid var(--line);
+  }
+  .event.e1 { background: linear-gradient(160deg, #2a2208, #16181c 70%); }
+  .event.e2 { background: linear-gradient(160deg, #2a0f0d, #16181c 70%); }
+  .event h3 { font-size: 2.2rem; }
+  .event p { color: var(--muted); margin-top: 10px; max-width: 440px; }
+  .event .btn { align-self: flex-start; margin-top: 20px; }
+
+  /* Safety */
+  .safety { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 48px; }
+  .safe { padding: 24px; border-left: 3px solid var(--accent); background: var(--bg-2); border-radius: 0 var(--radius) var(--radius) 0; }
+  .safe h3 { font-size: 1.3rem; margin-bottom: 6px; }
+  .safe p { color: var(--muted); font-size: .94rem; }
+
+  /* Booking */
+  .book-wrap { display: grid; grid-template-columns: 1fr 1.1fr; gap: 50px; align-items: start; }
+  form.book {
+    background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 30px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  }
+  .field { display: grid; gap: 6px; }
+  .field.full { grid-column: 1 / -1; }
+  label { font-size: .82rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+  input, select, textarea {
+    width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
+    padding: 13px 14px; color: var(--text); font: 500 1rem Inter, sans-serif;
+  }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+  textarea { resize: vertical; min-height: 90px; }
+  form.book .btn { grid-column: 1 / -1; }
+  .estimate {
+    grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 16px; border-radius: 10px; background: var(--bg-3); font-size: .95rem;
+  }
+  .estimate b { font-family: "Barlow Condensed", sans-serif; font-size: 1.6rem; color: var(--accent); }
+  .contact-list { list-style: none; margin-top: 30px; display: grid; gap: 16px; }
+  .contact-list li { display: flex; gap: 14px; align-items: flex-start; }
+  .contact-list .icon { flex: none; width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; background: var(--bg-3); color: var(--accent); }
+  .contact-list b { display: block; }
+  .contact-list span { color: var(--muted); font-size: .94rem; }
+
+  /* FAQ */
+  .faq { max-width: 820px; margin-top: 40px; }
+  details { border-bottom: 1px solid var(--line); padding: 20px 0; }
+  summary {
+    cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 20px;
+    font-weight: 600; font-size: 1.08rem;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; color: var(--accent); font-size: 1.5rem; line-height: 1; transition: transform .2s; }
+  details[open] summary::after { transform: rotate(45deg); }
+  details p { color: var(--muted); margin-top: 12px; }
+
+  /* CTA band */
+  .band { background: var(--accent); color: var(--accent-ink); padding: 64px 0; }
+  .band .wrap { display: flex; justify-content: space-between; align-items: center; gap: 30px; flex-wrap: wrap; }
+  .band h2 { font-style: italic; }
+  .band .btn { background: var(--accent-ink); color: var(--accent); }
+
+  footer { padding: 56px 0 40px; color: var(--muted); font-size: .92rem; }
+  .foot { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 30px; }
+  .foot h4 { color: var(--text); font-size: .85rem; text-transform: uppercase; letter-spacing: .12em; margin-bottom: 14px; }
+  .foot ul { list-style: none; display: grid; gap: 8px; }
+  .foot a { text-decoration: none; }
+  .foot a:hover { color: var(--text); }
+  .socials { display: flex; gap: 10px; margin-top: 18px; }
+  .socials a { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--line); display: grid; place-items: center; }
+  .socials a:hover { border-color: var(--accent); color: var(--accent); }
+  .copy { margin-top: 44px; padding-top: 22px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; font-size: .85rem; }
+
+  .wa-float {
+    position: fixed; right: 18px; bottom: 18px; z-index: 60;
+    width: 58px; height: 58px; border-radius: 50%; background: #25d366; color: #fff;
+    display: grid; place-items: center; box-shadow: 0 10px 30px rgba(0,0,0,.4);
+  }
+
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    html { scroll-behavior: auto; }
+    .live::before { animation: none; }
+  }
+
+  /* Responsive */
+  @media (max-width: 980px) {
+    .grid-4, .steps { grid-template-columns: 1fr 1fr; }
+    .pricing, .safety { grid-template-columns: 1fr; }
+    .lb-wrap, .book-wrap, .events-grid { grid-template-columns: 1fr; }
+    .foot { grid-template-columns: 1fr 1fr; }
+    .stats { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 760px) {
+    .nav-links {
+      display: none; position: absolute; top: 68px; left: 0; right: 0; flex-direction: column; gap: 0;
+      background: var(--bg); border-bottom: 1px solid var(--line);
+    }
+    .nav-links.open { display: flex; }
+    .nav-links a { display: block; padding: 16px 20px; border-top: 1px solid var(--line); }
+    .menu-btn { display: block; }
+    .nav .btn { display: none; }
+    section { padding: 72px 0; }
+    .hero { padding: 70px 0 60px; }
+    .track-lines { width: 460px; height: 460px; right: -200px; }
+  }
+  @media (max-width: 560px) {
+    .grid-4, .steps { grid-template-columns: 1fr; }
+    form.book { grid-template-columns: 1fr; padding: 22px; }
+    .foot { grid-template-columns: 1fr; }
+    .hero-ctas .btn { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="#top" class="logo" aria-label="Kartz PK home">Kart<span>z</span><small>PK</small></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#experiences">Experiences</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#leaderboard">Leaderboard</a></li>
+      <li><a href="#events">Events</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <a href="#book" class="btn btn-primary">Book a race</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">☰</button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <svg class="track-lines" viewBox="0 0 600 600" fill="none" aria-hidden="true">
+      <path d="M90 300c0-120 80-210 210-210s210 70 210 160-60 120-140 120-110 40-110 100-50 90-110 90S90 420 90 300Z" stroke="#ffcc00" stroke-width="3" stroke-dasharray="14 12"/>
+      <path d="M50 300c0-150 100-250 250-250s250 90 250 200-80 160-170 160-80 30-80 80-80 120-150 120S50 450 50 300Z" stroke="#fff" stroke-width="2"/>
+      <path d="M130 300c0-90 60-170 170-170s170 50 170 120-40 80-110 80-140 50-140 120-30 60-80 60-10-110-10-210Z" stroke="#fff" stroke-width="2"/>
+    </svg>
+    <div class="wrap">
+      <div class="kicker">Go karting in Pakistan</div>
+      <h1>Floor it.<br>Beat the <em>clock.</em></h1>
+      <p class="lead">Electric go karts, a timed track and a live leaderboard. Bring your friends, your family or your whole office and find out who is really fastest.</p>
+      <div class="hero-ctas">
+        <a href="#book" class="btn btn-primary">Book your slot</a>
+        <a href="#pricing" class="btn btn-ghost">See prices</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><b data-count="400">400</b><span>metre track (placeholder)</span></div>
+        <div class="stat"><b data-count="12">12</b><span>karts on track</span></div>
+        <div class="stat"><b>7+</b><span>years, junior karts</span></div>
+        <div class="stat"><b>7</b><span>days a week</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="checker" aria-hidden="true"></div>
+
+  <!-- EXPERIENCES -->
+  <section id="experiences">
+    <div class="wrap">
+      <div class="kicker reveal">Pick your race</div>
+      <h2 class="reveal">Experiences</h2>
+      <p class="lead reveal">First time or regular, there is a race format for you. Every session is timed, every lap is recorded.</p>
+      <div class="grid-4">
+        <article class="card reveal">
+          <div class="icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+          <h3>Arrive &amp; Drive</h3>
+          <p>Walk in, gear up and race. A quick safety briefing, then a timed session on track.</p>
+          <div class="meta"><b>10 min</b> session · ages 14+</div>
+        </article>
+        <article class="card reveal">
+          <div class="icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21V4h12l-2 4 2 4H4"/></svg></div>
+          <h3>Grand Prix</h3>
+          <p>Qualifying, then a full race with a grid start. Podium and printed results for the top three.</p>
+          <div class="meta"><b>30 min</b> · 6 to 12 drivers</div>
+        </article>
+        <article class="card reveal">
+          <div class="icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M5 21c1-4 4-6 7-6s6 2 7 6"/></svg></div>
+          <h3>Junior Karts</h3>
+          <p>Slower karts with speed limits set by our marshals, so kids can race safely.</p>
+          <div class="meta"><b>8 min</b> session · ages 7 to 13</div>
+        </article>
+        <article class="card reveal">
+          <div class="icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5h8v2"/></svg></div>
+          <h3>Corporate Cup</h3>
+          <p>Team endurance race with pit stops. Great for team building, with a private lounge.</p>
+          <div class="meta"><b>60 to 90 min</b> · 10 to 40 people</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEPS -->
+  <section class="steps-sec">
+    <div class="wrap">
+      <div class="kicker reveal">How it works</div>
+      <h2 class="reveal">From the door to the podium</h2>
+      <div class="steps">
+        <div class="step reveal"><h3>Book</h3><p>Pick a time online or on WhatsApp. Walk ins are welcome when slots are free.</p></div>
+        <div class="step reveal"><h3>Gear up</h3><p>We give you a helmet, a hair net and a neck guard. Closed shoes are a must.</p></div>
+        <div class="step reveal"><h3>Brief</h3><p>A short safety talk from our marshals: flags, overtaking and the rules of the track.</p></div>
+        <div class="step reveal"><h3>Race</h3><p>Every lap is timed. Your best lap goes on the leaderboard and on your phone.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing">
+    <div class="wrap">
+      <div class="kicker reveal">Simple pricing</div>
+      <h2 class="reveal">Prices</h2>
+      <p class="lead reveal">Prices per driver. Weekday daytime is cheaper, ask us about off peak deals.</p>
+      <div class="pricing">
+        <div class="price reveal">
+          <h3>Single Session</h3>
+          <div class="amount"><small>PKR</small> 2,500</div>
+          <div class="per">per driver · 10 minutes</div>
+          <ul>
+            <li>Safety briefing and gear</li>
+            <li>Timed laps</li>
+            <li>Best lap on the leaderboard</li>
+          </ul>
+          <a href="#book" class="btn btn-ghost" data-pkg="single">Book</a>
+        </div>
+        <div class="price featured reveal">
+          <span class="badge">Most popular</span>
+          <h3>Triple Pack</h3>
+          <div class="amount"><small>PKR</small> 6,500</div>
+          <div class="per">per driver · 3 × 10 minutes</div>
+          <ul>
+            <li>Everything in Single</li>
+            <li>Rest between sessions</li>
+            <li>Lap time report for every session</li>
+            <li>Save PKR 1,000</li>
+          </ul>
+          <a href="#book" class="btn btn-primary" data-pkg="triple">Book</a>
+        </div>
+        <div class="price reveal">
+          <h3>Grand Prix</h3>
+          <div class="amount"><small>PKR</small> 5,000</div>
+          <div class="per">per driver · 30 minutes</div>
+          <ul>
+            <li>Qualifying plus final race</li>
+            <li>Grid start</li>
+            <li>Podium and printed results</li>
+          </ul>
+          <a href="#book" class="btn btn-ghost" data-pkg="gp">Book</a>
+        </div>
+      </div>
+      <p class="note">Junior session PKR 1,800. Prices are sample figures until confirmed.</p>
+    </div>
+  </section>
+
+  <!-- LEADERBOARD -->
+  <section id="leaderboard" class="steps-sec">
+    <div class="wrap lb-wrap">
+      <div>
+        <div class="kicker reveal">Hall of speed</div>
+        <h2 class="reveal">Can you make the top 5?</h2>
+        <p class="lead reveal">Every best lap is recorded. The fastest driver each month wins a free Grand Prix race.</p>
+        <a href="#book" class="btn btn-primary reveal" style="margin-top:28px">Set your time</a>
+      </div>
+      <div class="lb reveal">
+        <div class="lb-head">
+          <div class="lb-tabs" role="tablist">
+            <button class="on" data-board="week">This week</button>
+            <button data-board="month">This month</button>
+            <button data-board="all">All time</button>
+          </div>
+          <span class="live">Live</span>
+        </div>
+        <table><tbody id="lbBody"></tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVENTS -->
+  <section id="events">
+    <div class="wrap">
+      <div class="kicker reveal">Private bookings</div>
+      <h2 class="reveal">Birthdays and team days</h2>
+      <div class="events-grid">
+        <div class="event e1 reveal">
+          <h3>Birthday Grand Prix</h3>
+          <p>Private race for the birthday crew, a podium moment for the birthday star and a party area for cake and snacks.</p>
+          <a href="#book" class="btn btn-primary" data-pkg="birthday">Plan a birthday</a>
+        </div>
+        <div class="event e2 reveal">
+          <h3>Corporate Cup</h3>
+          <p>Team endurance racing with driver changes and pit strategy. Private lounge, trophies and catering on request.</p>
+          <a href="#book" class="btn btn-primary" data-pkg="corporate">Get a quote</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SAFETY -->
+  <section>
+    <div class="wrap">
+      <div class="kicker reveal">Safety first</div>
+      <h2 class="reveal">Fast, not reckless</h2>
+      <div class="safety">
+        <div class="safe reveal"><h3>Marshals on track</h3><p>Trained marshals watch every session and can slow or stop all karts remotely.</p></div>
+        <div class="safe reveal"><h3>Proper gear</h3><p>Helmets, neck guards and hair nets for every driver, cleaned after each use.</p></div>
+        <div class="safe reveal"><h3>Barriers all round</h3><p>Impact barriers line the full track, and karts are serviced every day.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOK -->
+  <section id="book" class="steps-sec">
+    <div class="wrap book-wrap">
+      <div>
+        <div class="kicker reveal">Book now</div>
+        <h2 class="reveal">Grab your slot</h2>
+        <p class="lead reveal">Send your request and we will confirm on WhatsApp within minutes during opening hours.</p>
+        <ul class="contact-list reveal">
+          <li><div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg></div><div><b>Location</b><span data-ph="address">Venue address, City, Pakistan</span></div></li>
+          <li><div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div><b>Opening hours</b><span>Mon to Thu 2pm to 12am · Fri to Sun 12pm to 2am</span></div></li>
+          <li><div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg></div><div><b>Phone / WhatsApp</b><span data-ph="phone">+92 300 0000000</span></div></li>
+        </ul>
+      </div>
+      <form class="book reveal" id="bookForm" novalidate>
+        <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" required autocomplete="name" placeholder="Your name"></div>
+        <div class="field"><label for="f-phone">Phone</label><input id="f-phone" name="phone" required type="tel" autocomplete="tel" placeholder="03xx xxxxxxx"></div>
+        <div class="field full"><label for="f-pkg">Package</label>
+          <select id="f-pkg" name="pkg">
+            <option value="single">Single Session (PKR 2,500 per driver)</option>
+            <option value="triple">Triple Pack (PKR 6,500 per driver)</option>
+            <option value="gp">Grand Prix (PKR 5,000 per driver)</option>
+            <option value="junior">Junior Session (PKR 1,800 per driver)</option>
+            <option value="birthday">Birthday Grand Prix (quote)</option>
+            <option value="corporate">Corporate Cup (quote)</option>
+          </select>
+        </div>
+        <div class="field"><label for="f-date">Date</label><input id="f-date" name="date" type="date" required></div>
+        <div class="field"><label for="f-time">Time</label><input id="f-time" name="time" type="time" required step="900"></div>
+        <div class="field full"><label for="f-drivers">Drivers</label><input id="f-drivers" name="drivers" type="number" min="1" max="40" value="2" required></div>
+        <div class="field full"><label for="f-notes">Notes</label><textarea id="f-notes" name="notes" placeholder="Anything we should know?"></textarea></div>
+        <div class="estimate"><span>Estimated total</span><b id="estimate">PKR 5,000</b></div>
+        <button class="btn btn-primary" type="submit">Send on WhatsApp</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="kicker reveal">Questions</div>
+      <h2 class="reveal">FAQ</h2>
+      <div class="faq">
+        <details class="reveal"><summary>How old do I need to be?</summary><p>Junior karts are for ages 7 to 13 (minimum height 120 cm). Adult karts are for 14 and up (minimum height 150 cm).</p></details>
+        <details class="reveal"><summary>Do I need driving experience?</summary><p>No. Karts have one pedal to go and one to brake. Our marshals brief every driver before they go on track.</p></details>
+        <details class="reveal"><summary>What should I wear?</summary><p>Comfortable clothes and closed shoes. Long scarves, dupattas and loose items must be removed or tucked away for safety. We provide helmets and hair nets.</p></details>
+        <details class="reveal"><summary>Can I walk in without booking?</summary><p>Yes, if slots are free. Weekends and evenings fill up fast, so booking ahead is best.</p></details>
+        <details class="reveal"><summary>How do I pay?</summary><p>Cash, card, or mobile wallet at the counter. Group and corporate bookings need a deposit to confirm.</p></details>
+        <details class="reveal"><summary>Can I cancel or reschedule?</summary><p>Free rescheduling up to 24 hours before your slot. Message us on WhatsApp.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <div class="band">
+    <div class="wrap">
+      <h2>Ready to race?</h2>
+      <a href="#book" class="btn">Book your slot</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a href="#top" class="logo">Kart<span>z</span><small>PK</small></a>
+        <p style="margin-top:12px;max-width:320px">Go karting, timed racing and private events in Pakistan.</p>
+        <div class="socials">
+          <a href="#" aria-label="Instagram" data-ph="instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+          <a href="#" aria-label="Facebook" data-ph="facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3V5h-3c-2.8 0-4 1.8-4 4.3V11H7v4h3v7h4v-7h3l1-4h-4V9.5c0-.3.2-.5.5-.5Z"/></svg></a>
+          <a href="#" aria-label="TikTok" data-ph="tiktok"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 3c.3 2.3 1.8 4 4 4.2v3.3c-1.5 0-2.9-.4-4-1.2V16a6 6 0 1 1-6-6v3.4a2.6 2.6 0 1 0 2.6 2.6V3H16Z"/></svg></a>
+        </div>
+      </div>
+      <div><h4>Race</h4><ul><li><a href="#experiences">Experiences</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#leaderboard">Leaderboard</a></li></ul></div>
+      <div><h4>Events</h4><ul><li><a href="#events">Birthdays</a></li><li><a href="#events">Corporate</a></li><li><a href="#book">Group booking</a></li></ul></div>
+      <div><h4>Help</h4><ul><li><a href="#faq">FAQ</a></li><li><a href="#book">Contact</a></li><li><a href="#book">Directions</a></li></ul></div>
+    </div>
+    <div class="copy"><span>© <span id="yr"></span> Kartz PK. All rights reserved.</span><span>Drive safe. Race hard.</span></div>
+  </div>
+</footer>
+
+<a class="wa-float" id="waFloat" href="#" aria-label="Chat on WhatsApp" target="_blank" rel="noopener">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.4 5 5.1-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .5l-.3.5-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l2 .9c.3.2.5.2.5.4.1.1.1.7-.1 1.3Z"/></svg>
+</a>
+
+<script>
+  // ==== EDIT THESE: business details used across the page ====
+  const KARTZ = {
+    whatsapp: "923000000000",            // international format, no + or spaces
+    phoneDisplay: "+92 300 0000000",
+    address: "Venue address, City, Pakistan",
+    instagram: "#",
+    facebook: "#",
+    tiktok: "#",
+    prices: { single: 2500, triple: 6500, gp: 5000, junior: 1800, birthday: null, corporate: null }
+  };
+
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+  $("#yr").textContent = new Date().getFullYear();
+  $$('[data-ph="phone"]').forEach(el => el.textContent = KARTZ.phoneDisplay);
+  $$('[data-ph="address"]').forEach(el => el.textContent = KARTZ.address);
+  ["instagram", "facebook", "tiktok"].forEach(k => $$(`[data-ph="${k}"]`).forEach(a => a.href = KARTZ[k]));
+  $("#waFloat").href = `https://wa.me/${KARTZ.whatsapp}?text=${encodeURIComponent("Hi Kartz PK, I'd like to book a race.")}`;
+
+  // Mobile menu
+  const menuBtn = $("#menuBtn"), navLinks = $("#navLinks");
+  menuBtn.addEventListener("click", () => {
+    const open = navLinks.classList.toggle("open");
+    menuBtn.setAttribute("aria-expanded", open);
+  });
+  $$("#navLinks a").forEach(a => a.addEventListener("click", () => navLinks.classList.remove("open")));
+
+  // Leaderboard (sample data until connected to real lap timing)
+  const boards = {
+    week:  [["Hamza R.", "Kart 07", 31.482], ["Ayesha K.", "Kart 03", 31.917], ["Bilal S.", "Kart 11", 32.204], ["Zain M.", "Kart 07", 32.611], ["Sana T.", "Kart 02", 32.955]],
+    month: [["Usman A.", "Kart 05", 30.874], ["Hamza R.", "Kart 07", 31.482], ["Fatima N.", "Kart 09", 31.610], ["Ayesha K.", "Kart 03", 31.917], ["Ali H.", "Kart 01", 32.040]],
+    all:   [["Usman A.", "Kart 05", 30.874], ["Danish F.", "Kart 12", 30.991], ["Fatima N.", "Kart 09", 31.610], ["Hamza R.", "Kart 07", 31.482], ["Mariam J.", "Kart 04", 31.733]]
+  };
+  function renderBoard(key) {
+    const rows = boards[key].slice().sort((a, b) => a[2] - b[2]);
+    $("#lbBody").innerHTML = rows.map((r, i) =>
+      `<tr><td class="pos">${i + 1}</td><td>${r[0]}<br><span class="kart" style="color:var(--muted);font-size:.85rem">${r[1]}</span></td><td class="time">${r[2].toFixed(3)}s</td></tr>`
+    ).join("");
+  }
+  $$(".lb-tabs button").forEach(b => b.addEventListener("click", () => {
+    $$(".lb-tabs button").forEach(x => x.classList.toggle("on", x === b));
+    renderBoard(b.dataset.board);
+  }));
+  renderBoard("week");
+
+  // Booking form
+  const form = $("#bookForm"), pkg = $("#f-pkg"), drivers = $("#f-drivers"), est = $("#estimate");
+  const dateInput = $("#f-date");
+  dateInput.min = new Date().toISOString().slice(0, 10);
+  function updateEstimate() {
+    const p = KARTZ.prices[pkg.value];
+    const n = Math.max(1, parseInt(drivers.value, 10) || 1);
+    est.textContent = p ? `PKR ${(p * n).toLocaleString("en-PK")}` : "We'll send a quote";
+  }
+  pkg.addEventListener("change", updateEstimate);
+  drivers.addEventListener("input", updateEstimate);
+  $$("[data-pkg]").forEach(a => a.addEventListener("click", () => { pkg.value = a.dataset.pkg; updateEstimate(); }));
+  updateEstimate();
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    const d = Object.fromEntries(new FormData(form));
+    const msg = [
+      "Hi Kartz PK, I'd like to book:",
+      `Name: ${d.name}`,
+      `Phone: ${d.phone}`,
+      `Package: ${pkg.options[pkg.selectedIndex].text}`,
+      `Date: ${d.date} at ${d.time}`,
+      `Drivers: ${d.drivers}`,
+      `Estimate: ${est.textContent}`,
+      d.notes ? `Notes: ${d.notes}` : ""
+    ].filter(Boolean).join("\n");
+    window.open(`https://wa.me/${KARTZ.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
+  });
+
+  // Scroll reveal
+  const io = "IntersectionObserver" in window ? new IntersectionObserver(entries => {
+    entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } });
+  }, { threshold: .12 }) : null;
+  $$(".reveal").forEach(el => io ? io.observe(el) : el.classList.add("in"));
+</script>
+</body>
+</html>
