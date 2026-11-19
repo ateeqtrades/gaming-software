@@ -90,7 +90,9 @@ export default function Site() {
       const intro = document.getElementById("intro");
       const past = window.scrollY > window.innerHeight * 0.9;
       const atForm = intro ? intro.getBoundingClientRect().top < window.innerHeight : false;
-      setDock(past && !atForm);
+      const st = document.querySelector(".bt-stage")?.getBoundingClientRect();
+      const inStage = st ? st.top < window.innerHeight * 0.5 && st.bottom > window.innerHeight * 0.5 : false;
+      setDock(past && !atForm && !inStage);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -116,6 +118,7 @@ export default function Site() {
       gsap.ticker.lagSmoothing(0);
     }
 
+    let fitWords = () => {};
     const ctx = gsap.context(() => {
       /* ---------- Loader + hero intro ---------- */
       const heroSplit = new SplitText(".hero-h .line", { type: "chars", charsClass: "ch" });
@@ -204,27 +207,80 @@ export default function Site() {
         }
       );
 
-      /* ---------- The Between: pinned signature moment ---------- */
-      const words = gsap.utils.toArray<HTMLElement>(".between-word");
+      /* ---------- The Between: pinned signature moment ----------
+         Everything is positioned from the exact centre of the stage in px, so it lines up at any size. */
+      const stage = document.querySelector<HTMLElement>(".bt-stage")!;
+      const words = gsap.utils.toArray<HTMLElement>(".bt-word");
+      const geo = () => {
+        const w = stage.clientWidth;
+        const cs = getComputedStyle(stage);
+        const bw = parseFloat(cs.getPropertyValue("--bw")) || 40;
+        const gut = w < 700 ? 30 : 0;
+        const spread = w < 700 ? w / 2 - gut - bw / 2 : Math.min(w * 0.34, 560);
+        return { w, bw, spread, gap: spread * 2 - bw };
+      };
+      fitWords = () => {
+        const { gap, w, spread } = geo();
+        stage.style.setProperty("--spread", `${spread}px`);
+        const target = gap * (w < 700 ? 0.8 : 0.78);
+        words.forEach((el) => {
+          el.style.fontSize = "100px";
+          const nat = el.scrollWidth || 1;
+          el.style.fontSize = `${Math.min((100 * target) / nat, w < 700 ? 120 : 190)}px`;
+        });
+      };
+      fitWords();
+      ScrollTrigger.addEventListener("refreshInit", fitWords);
+
+      const STEP = 0.55;
+      const W0 = 1.35;
       const bt = gsap.timeline({
+        defaults: { ease: "none" },
         scrollTrigger: {
           trigger: ".between",
           start: "top top",
-          end: "+=220%",
-          scrub: 0.8,
+          end: () => `+=${window.innerHeight * (2.2 + words.length * 0.5)}`,
+          scrub: 0.6,
           pin: true,
+          invalidateOnRefresh: true,
+          onUpdate: () => {
+            let i = 0;
+            let best = -1;
+            words.forEach((w, k) => {
+              const o = parseFloat(getComputedStyle(w).opacity);
+              if (o > best + 0.01) {
+                best = o;
+                i = k;
+              }
+            });
+            const n = document.querySelector(".bt-n");
+            if (n) n.textContent = String(i + 1).padStart(2, "0");
+          },
         },
       });
-      bt.fromTo(".bw-l", { xPercent: 260 }, { xPercent: 0, ease: "power3.inOut", duration: 1 }, 0)
-        .fromTo(".bw-r", { xPercent: -260 }, { xPercent: 0, ease: "power3.inOut", duration: 1 }, 0)
-        .fromTo(".bw-d", { scale: 0 }, { scale: 1, ease: "back.out(2)", duration: 0.4 }, 0.6)
-        .fromTo(".bw-lab", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.1 }, 0.8);
+      bt.fromTo(".bt-l", { x: () => -geo().bw / 2 }, { x: () => -geo().spread, ease: "power3.inOut", duration: 1 }, 0)
+        .fromTo(".bt-r", { x: () => geo().bw / 2 }, { x: () => geo().spread, ease: "power3.inOut", duration: 1 }, 0)
+        .fromTo(".bt-bar", { scaleY: 0.55 }, { scaleY: 1, ease: "power3.inOut", duration: 1 }, 0)
+        .fromTo(".bt-lab", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.75)
+        .fromTo(".bt-dot", { scale: 0 }, { scale: 1, ease: "back.out(2.2)", duration: 0.35 }, 0.85)
+        .fromTo(".bt-glow", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.5 }, 0.85)
+        .fromTo(".bt-line", { scaleX: 0 }, { scaleX: 1, ease: "power2.out", duration: 0.35 }, 1.05)
+        .fromTo(".bt-meta", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.25 }, 1.1);
       words.forEach((w, i) => {
-        const at = 1.1 + i * 0.45;
-        bt.fromTo(w, { yPercent: 100, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.2 }, at);
-        if (i < words.length - 1) bt.to(w, { yPercent: -100, opacity: 0, duration: 0.2 }, at + 0.35);
+        const at = W0 + i * STEP;
+        bt.fromTo(
+          w,
+          { yPercent: 40, opacity: 0, filter: "blur(10px)" },
+          { yPercent: 0, opacity: 1, filter: "blur(0px)", duration: STEP * 0.4, ease: "power2.out" },
+          at
+        );
+        if (i < words.length - 1)
+          bt.to(w, { yPercent: -40, opacity: 0, filter: "blur(10px)", duration: STEP * 0.4, ease: "power2.in" }, at + STEP * 0.6);
       });
-      bt.fromTo(".between-cap", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 1.1);
+      const end = W0 + words.length * STEP;
+      bt.fromTo(".bt-cap", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.3 }, end - STEP * 0.4)
+        .to(".bt-dot", { scale: 1.35, duration: 0.4, ease: "power2.inOut" }, end - STEP * 0.4)
+        .to({}, { duration: 0.3 });
 
       /* ---------- Section headings reveal ---------- */
       gsap.utils.toArray<HTMLElement>(".reveal").forEach((el) => {
@@ -323,6 +379,7 @@ export default function Site() {
     }
 
     return () => {
+      ScrollTrigger.removeEventListener("refreshInit", fitWords);
       ctx.revert();
       lenis?.destroy();
       document.removeEventListener("click", onClick);
@@ -475,26 +532,23 @@ export default function Site() {
 
         {/* The Between */}
         <section className="between" aria-label="You, us, and the market">
-          <div className="between-stage">
-            <div className="bw">
-              <div className="bw-col">
-                <div className="bw-bar bw-l" />
-                <span className="bw-lab mono">You</span>
-              </div>
-              <div className="bw-mid">
-                <div className="bw-d" />
-                <div className="between-words" aria-hidden="true">
-                  {SIDES.map((s) => (
-                    <span key={s} className="between-word">{s}</span>
-                  ))}
-                </div>
-              </div>
-              <div className="bw-col">
-                <div className="bw-bar bw-r" />
-                <span className="bw-lab mono">The market</span>
-              </div>
+          <div className="bt-stage">
+            <div className="bt-glow" aria-hidden="true" />
+            <div className="bt-words" aria-hidden="true">
+              {SIDES.map((w) => (
+                <span key={w} className="bt-word">{w}</span>
+              ))}
             </div>
-            <p className="between-cap">
+            <div className="bt-line bt-line-l" aria-hidden="true" />
+            <div className="bt-line bt-line-r" aria-hidden="true" />
+            <div className="bt-bar bt-l" aria-hidden="true"><span className="bt-lab mono">You</span></div>
+            <div className="bt-bar bt-r" aria-hidden="true"><span className="bt-lab mono">The market</span></div>
+            <div className="bt-dot" aria-hidden="true"><i /></div>
+            <div className="bt-meta mono" aria-hidden="true">
+              <span>What we bring</span>
+              <span><span className="bt-n tnum">01</span> / {String(SIDES.length).padStart(2, "0")}</span>
+            </div>
+            <p className="bt-cap">
               Every deal has two sides. <b>We are the point between them.</b>
             </p>
             <p className="sr-only">We connect you to buyers, partners, capital, distribution, talent and the room.</p>
