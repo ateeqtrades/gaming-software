@@ -1,0 +1,114 @@
+<!doctype html><html><head><meta charset="utf-8">
+<style>html,body{margin:0;background:transparent}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"/site/node_modules/three/build/three.module.js","three/addons/":"/site/node_modules/three/examples/jsm/"}}</script>
+</head><body>
+<script type="module">
+import * as THREE from "three";
+import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+const P = new URLSearchParams(location.search);
+const W = +P.get("w") || 1600, H = +P.get("h") || 1600;
+const shot = P.get("shot") || "hero";
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1); renderer.setSize(W, H);
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.body.appendChild(renderer.domElement);
+
+// Studio environment: dark room with long softbox strips, so chrome reads as black with crisp highlights.
+function studio() {
+  const s = new THREE.Scene();
+  s.background = new THREE.Color(0x050506);
+  const strip = (w, h, x, y, z, ry, rx, i) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(i, i, i * 0.97), side: THREE.DoubleSide }));
+    m.position.set(x, y, z); m.rotation.set(rx || 0, ry || 0, 0); s.add(m);
+  };
+  strip(1.6, 14, -7, 0, 2, Math.PI / 2, 0, 6);
+  strip(1.0, 14, 7, 0, -1, -Math.PI / 2, 0, 3.2);
+  strip(16, 2.2, 0, 8, 0, 0, Math.PI / 2, 2.2);
+  strip(6, 0.5, 0, -2, 8, Math.PI, 0, 1.4);
+  strip(3, 10, 3, 0, 9, Math.PI, 0, 0.9);
+  const g = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.MeshBasicMaterial({ color: 0x0c0c0d }));
+  g.rotation.x = -Math.PI / 2; g.position.y = -5; s.add(g);
+  return s;
+}
+const pmrem = new THREE.PMREMGenerator(renderer);
+const scene = new THREE.Scene();
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.035).texture;
+void studio;
+
+const M = {
+  chrome: new THREE.MeshPhysicalMaterial({ color: 0xf2f0ec, metalness: 1, roughness: 0.14, clearcoat: 1, clearcoatRoughness: 0.08, envMapIntensity: 1.25 }),
+  satin: new THREE.MeshPhysicalMaterial({ color: 0xdedbd5, metalness: 1, roughness: 0.32, envMapIntensity: 1.2 }),
+  bone: new THREE.MeshPhysicalMaterial({ color: 0xece8e1, metalness: 0, roughness: 0.38, clearcoat: 0.6, clearcoatRoughness: 0.25, sheen: 0.5, sheenColor: new THREE.Color(0xffffff) }),
+  graphite: new THREE.MeshPhysicalMaterial({ color: 0x141416, metalness: 0.6, roughness: 0.28, clearcoat: 1, clearcoatRoughness: 0.1, envMapIntensity: 1.1 }),
+};
+
+const S = 1 / 38;
+const bar = new RoundedBoxGeometry(16 * S, 76 * S, 16 * S, 8, 0.03);
+const ball = new THREE.SphereGeometry(10 * S, 128, 128);
+
+function mark(barMat, dotMat, spread = 1, dotScale = 1) {
+  const g = new THREE.Group();
+  const l = new THREE.Mesh(bar, barMat), r = new THREE.Mesh(bar, barMat), d = new THREE.Mesh(ball, dotMat);
+  l.position.x = -32 * S * spread; r.position.x = 32 * S * spread; d.scale.setScalar(dotScale);
+  g.add(l, r, d); return g;
+}
+function floorGlow(y, w = 5, a = 0.28) {
+  const c = document.createElement("canvas"); c.width = c.height = 512; const x = c.getContext("2d");
+  const gr = x.createRadialGradient(256, 256, 0, 256, 256, 256); gr.addColorStop(0, `rgba(236,232,225,${a})`); gr.addColorStop(1, "rgba(236,232,225,0)");
+  x.fillStyle = gr; x.fillRect(0, 0, 512, 512);
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, w * 0.32), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false }));
+  m.rotation.x = -Math.PI / 2; m.position.y = y; return m;
+}
+function contact(y, w = 3) {
+  const c = document.createElement("canvas"); c.width = c.height = 256; const x = c.getContext("2d");
+  const gr = x.createRadialGradient(128, 128, 0, 128, 128, 128); gr.addColorStop(0, "rgba(0,0,0,.75)"); gr.addColorStop(1, "rgba(0,0,0,0)");
+  x.fillStyle = gr; x.fillRect(0, 0, 256, 256);
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, w * 0.18), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false }));
+  m.rotation.x = -Math.PI / 2; m.position.y = y + 0.002; return m;
+}
+
+const cam = new THREE.PerspectiveCamera(26, W / H, 0.1, 100);
+const key = new THREE.DirectionalLight(0xffffff, 1.2); key.position.set(3, 5, 4); scene.add(key);
+const rim = new THREE.DirectionalLight(0xc9d0dc, 2.4); rim.position.set(-5, 1, -4); scene.add(rim);
+
+let g;
+switch (shot) {
+  case "hero":
+    g = mark(M.chrome, M.bone); g.rotation.set(0.08, -0.55, 0); scene.add(g, floorGlow(-1.08, 6), contact(-1.06, 3.2));
+    cam.position.set(0.4, 0.55, 7.4); cam.lookAt(0, -0.05, 0); break;
+  case "front":
+    g = mark(M.chrome, M.bone); scene.add(g, floorGlow(-1.08, 5, 0.18));
+    cam.fov = 18; cam.position.set(0, 0, 10.5); cam.lookAt(0, 0, 0); break;
+  case "top":
+    g = mark(M.chrome, M.bone); g.rotation.set(0, -0.25, 0); scene.add(g, contact(-1.06, 3));
+    cam.position.set(1.6, 6.2, 3.2); cam.lookAt(0, -0.3, 0); break;
+  case "low":
+    g = mark(M.chrome, M.bone); g.rotation.set(0, 0.5, 0); scene.add(g, floorGlow(-1.08, 6, 0.32), contact(-1.06, 3.4));
+    cam.fov = 30; cam.position.set(-0.6, -0.6, 6.4); cam.lookAt(0, 0.15, 0); break;
+  case "bone":
+    g = mark(M.bone, M.chrome); g.rotation.set(0.05, -0.45, 0); scene.add(g, floorGlow(-1.08, 6, 0.3), contact(-1.06, 3));
+    cam.position.set(0.3, 0.45, 7.4); cam.lookAt(0, -0.05, 0); break;
+  case "graphite":
+    g = mark(M.graphite, M.chrome); g.rotation.set(0.05, 0.5, 0); scene.add(g, floorGlow(-1.08, 6, 0.36), contact(-1.06, 3));
+    cam.position.set(-0.2, 0.45, 7.4); cam.lookAt(0, -0.05, 0); break;
+  case "between":
+    g = mark(M.chrome, M.bone, 2.6, 1.35); g.rotation.set(0.04, -0.18, 0); scene.add(g, floorGlow(-1.08, 9, 0.3), contact(-1.06, 6));
+    cam.fov = 24; cam.position.set(0.2, 0.35, 10.5); cam.lookAt(0, -0.05, 0); break;
+  case "dot":
+    g = new THREE.Group(); { const d = new THREE.Mesh(ball, M.bone); d.scale.setScalar(4); g.add(d); } scene.add(g);
+    cam.position.set(0, 0, 7); cam.lookAt(0, 0, 0); break;
+  case "m-chrome": case "m-satin": case "m-bone": case "m-graphite":
+    g = new THREE.Group(); { const d = new THREE.Mesh(ball, M[shot.slice(2)]); d.scale.setScalar(4.2); g.add(d); } scene.add(g);
+    cam.position.set(0, 0, 7); cam.lookAt(0, 0, 0); break;
+  case "pillar":
+    g = new THREE.Group(); { const b = new THREE.Mesh(bar, M.chrome); b.rotation.set(0.2, 0.7, 0.05); g.add(b); } scene.add(g);
+    cam.fov = 24; cam.position.set(0, 0, 6); cam.lookAt(0, 0, 0); break;
+}
+cam.aspect = W / H; cam.updateProjectionMatrix();
+renderer.render(scene, cam);
+window.__done = true;
+</script></body></html>
