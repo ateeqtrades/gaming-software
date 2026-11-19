@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Middlemen × Bagh · One page proposal</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..900&family=Inter+Tight:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+@page{size:A4;margin:0}
+:root{--ink:#0B0B0C;--paper:#F2EFE9;--line:rgba(11,11,12,.14);--stone:#6E6A63;--dim:#9A958C;
+--display:"Archivo",Arial,sans-serif;--body:"Inter Tight",Arial,sans-serif;--mono:"Geist Mono",monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:210mm;height:297mm}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:9.6pt;line-height:1.45;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page{width:210mm;height:297mm;padding:13mm 14mm 11mm;display:grid;grid-template-rows:auto auto auto auto auto 1fr auto;gap:6.2mm;position:relative;overflow:hidden}
+.k{font-family:var(--mono);font-size:6.6pt;letter-spacing:.14em;text-transform:uppercase;color:var(--stone)}
+.top{display:flex;justify-content:space-between;align-items:center}
+.brand{display:flex;align-items:center;gap:7px;font-family:var(--display);font-weight:800;font-stretch:125%;letter-spacing:.06em;font-size:10pt}
+.brand svg{width:15px;height:15px}
+.hero{display:grid;grid-template-columns:1.35fr 1fr;gap:9mm;align-items:end;padding-bottom:6mm;border-bottom:1px solid var(--ink)}
+h1{font-family:var(--display);font-weight:800;font-stretch:122%;font-size:31pt;line-height:.92;letter-spacing:-.02em}
+.hero p{font-size:10.4pt;line-height:1.45;color:#2b2a27;font-weight:400}
+.hero p b{font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-bottom:1px solid var(--line);padding-bottom:5mm}
+.stat{display:grid;gap:2mm;padding-right:6mm}
+.stat+.stat{padding-left:6mm;border-left:1px solid var(--line)}
+.stat b{font-family:var(--display);font-weight:800;font-stretch:118%;font-size:22pt;line-height:1;letter-spacing:-.02em}
+.stat span{font-size:8.4pt;color:var(--stone);line-height:1.35}
+h2{font-family:var(--display);font-weight:800;font-stretch:115%;font-size:12.5pt;letter-spacing:-.01em;margin-bottom:2.6mm}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:6mm}
+.three div{display:grid;gap:1.6mm;align-content:start}
+.three h3{font-family:var(--display);font-weight:800;font-stretch:122%;font-size:14pt;letter-spacing:-.01em}
+.three ul{list-style:none;display:grid;gap:1.2mm;font-size:8.6pt;color:#2b2a27}
+.three li{padding-left:3.2mm;position:relative}
+.three li::before{content:"";position:absolute;left:0;top:1.6mm;width:1.4mm;height:1.4mm;border-radius:50%;background:var(--ink)}
+.time{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--ink);position:relative}
+.time div{padding:3mm 4mm 0 0;display:grid;gap:1mm;position:relative}
+.time div::before{content:"";position:absolute;top:-1.15mm;left:0;width:2.2mm;height:2.2mm;border-radius:50%;background:var(--paper);border:1px solid var(--ink)}
+.time div:last-child::before{background:var(--ink)}
+.time b{font-family:var(--display);font-stretch:115%;font-size:10.4pt}
+.time span{font-size:8.2pt;color:var(--stone)}
+.targets{display:flex;gap:6mm;margin-top:3.4mm;font-size:8.4pt;color:var(--stone)}
+.targets b{color:var(--ink);font-weight:600}
+.deal{display:grid;grid-template-columns:1.1fr 1fr;gap:5mm}
+.box{border-radius:2mm;padding:5mm 5.5mm;display:grid;gap:2.4mm;align-content:start}
+.dark{background:var(--ink);color:var(--paper)}
+.dark .k{color:#9b978f}
+.big{font-family:var(--display);font-weight:800;font-stretch:120%;font-size:21pt;line-height:1;letter-spacing:-.02em}
+.dark p{font-size:8.8pt;color:#cfcac2}
+.dark p b{color:#fff;font-weight:600}
+.light{border:1px solid var(--line)}
+.light ol{list-style:none;display:grid;gap:1.6mm;font-size:8.8pt;counter-reset:n}
+.light li{display:grid;grid-template-columns:5mm 1fr;counter-increment:n}
+.light li::before{content:counter(n);font-family:var(--mono);font-size:7pt;color:var(--dim);padding-top:.4mm}
+.next{display:flex;justify-content:space-between;align-items:center;gap:6mm;padding:4.6mm 0 0;border-top:1px solid var(--ink)}
+.next p{font-family:var(--display);font-weight:800;font-stretch:118%;font-size:14pt;letter-spacing:-.01em}
+.next .who{text-align:right;font-size:8.4pt;line-height:1.5}
+.next .who b{font-weight:600}
+.src{font-size:6.2pt;color:var(--dim);line-height:1.4;margin-top:2.6mm}
+.wm{position:absolute;right:-20mm;top:28mm;width:105mm;opacity:.045;pointer-events:none}
+</style></head>
+<body><div class="page">
+
+
+  <div class="top">
+    <div class="brand"><svg viewBox="0 0 120 120"><g fill="#0B0B0C"><rect x="20" y="22" width="16" height="76"/><rect x="84" y="22" width="16" height="76"/><circle cx="60" cy="60" r="10"/></g></svg>MIDDLEMEN</div>
+    <span class="k">Prepared for Bagh Mining &amp; Minerals · November 2026 · Confidential</span>
+  </div>
+
+  <div class="hero">
+    <h1>Your next market is 2,400 km across the sea.</h1>
+    <p>Middlemen proposes to open the Maldives for Bagh. We bring <b>warm introductions to named buyers</b>, a sales kit that passes their checks, and a plan to a <b>first barge in 90 days</b>. We are paid only when your cargo sails.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b>$54.8M</b><span>Gravel, crushed stone and sand imported by the Maldives in 2023. The country has no rivers and no quarries.</span></div>
+    <div class="stat"><b>97%</b><span>Of its gravel and crushed stone came from just two countries, the UAE and India. Buyers need a second source.</span></div>
+    <div class="stat"><b>500 km</b><span>Roughly how much closer Karachi is to Malé than Fujairah, and outside the Gulf. Close enough for a regular barge run.</span></div>
+  </div>
+
+  <div>
+    <h2>What we do for Bagh</h2>
+    <div class="three">
+      <div><span class="k">Connect</span><h3>Buyers</h3><ul><li>Four warm introductions to named Maldivian buyers</li><li>Outreach to 60 target accounts</li><li>One Malé visit to meet every qualified buyer</li></ul></div>
+      <div><span class="k">Close</span><h3>Orders</h3><ul><li>Qualifying calls, samples and quotations</li><li>Negotiation through to a trial barge</li><li>Six or twelve month supply contracts</li></ul></div>
+      <div><span class="k">Build</span><h3>Sales kit</h3><ul><li>Real site photos and video</li><li>Spec sheet per product, price sheet</li><li>Company profile, website, import approval file</li></ul></div>
+    </div>
+  </div>
+
+  <div>
+    <h2>Ninety days to the first barge</h2>
+    <div class="time">
+      <div><span class="k">Days 1 to 15</span><b>Set up</b><span>Sales kit, prices, target list</span></div>
+      <div><span class="k">Days 16 to 45</span><b>Open doors</b><span>Introductions, outreach, samples</span></div>
+      <div><span class="k">Days 46 to 75</span><b>Meet and quote</b><span>Malé visit, six quotations</span></div>
+      <div><span class="k">Days 76 to 90</span><b>First barge</b><span>Trial orders, inspected loading</span></div>
+    </div>
+    <div class="targets"><span>Targets</span><span><b>1 barge</b> by day 90</span><span><b>10,000 t</b> a month by month 6</span><span><b>20,000 t</b> a month by month 12</span></div>
+  </div>
+
+  <div class="deal">
+    <div class="box dark">
+      <span class="k">How we are paid</span>
+      <div class="big">$1 per tonne.</div>
+      <p>On sand, aggregate and gravel shipped to buyers we introduce. Armour rock priced per project. <b>No retainer. No upfront fee.</b> The sales kit is included in the mandate.</p>
+    </div>
+    <div class="box light">
+      <span class="k">What we need from Bagh</span>
+      <ol>
+        <li>FOB price per tonne for each product</li>
+        <li>Monthly capacity and largest single cargo</li>
+        <li>Loading port and barge arrangements</li>
+        <li>Lab reports, plus one decision maker for quotes</li>
+      </ol>
+    </div>
+  </div>
+
+  <div>
+    <div class="next">
+      <p>Sign the mandate this week.<br>Kit ready in fifteen days.</p>
+      <div class="who"><b>Dayan Khan</b> · <b>Syed Ahmad Hassan</b><br>Founding Partners, Middlemen<br>Pakistan · Worldwide</div>
+    </div>
+    <p class="src">Sources: OEC trade data 2023 (HS 2517, HS 2505). Distance is a straight line estimate. Volumes are targets, not guarantees, and depend on capacity, pricing and freight.</p>
+  </div>
+</div></body></html>

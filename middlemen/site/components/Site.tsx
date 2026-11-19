@@ -5,7 +5,10 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import Lenis from "lenis";
+import dynamic from "next/dynamic";
 import { Mark, Wordmark } from "./Mark";
+
+const Hero3D = dynamic(() => import("./Hero3D"), { ssr: false });
 
 const useIso = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
@@ -76,8 +79,28 @@ function Clock() {
 
 export default function Site() {
   const root = useRef<HTMLDivElement>(null);
+  const lenisRef = useRef<Lenis | null>(null);
   const [needs, setNeeds] = useState<string[]>(["Buyers"]);
   const [sent, setSent] = useState<"" | "intro" | "drop">("");
+  const [menu, setMenu] = useState(false);
+  const [dock, setDock] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const intro = document.getElementById("intro");
+      const past = window.scrollY > window.innerHeight * 0.9;
+      const atForm = intro ? intro.getBoundingClientRect().top < window.innerHeight : false;
+      setDock(past && !atForm);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("menu-open", menu);
+    if (menu) lenisRef.current?.stop();
+    else lenisRef.current?.start();
+  }, [menu]);
 
   useIso(() => {
     gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -87,6 +110,7 @@ export default function Site() {
     let lenis: Lenis | null = null;
     if (!reduce) {
       lenis = new Lenis({ lerp: 0.09, smoothWheel: true });
+      lenisRef.current = lenis;
       lenis.on("scroll", ScrollTrigger.update);
       gsap.ticker.add((time) => lenis?.raf(time * 1000));
       gsap.ticker.lagSmoothing(0);
@@ -95,32 +119,58 @@ export default function Site() {
     const ctx = gsap.context(() => {
       /* ---------- Loader + hero intro ---------- */
       const heroSplit = new SplitText(".hero-h .line", { type: "chars", charsClass: "ch" });
-      const intro = gsap.timeline({ defaults: { ease: "expo.inOut" } });
       if (reduce) {
         gsap.set(".loader", { display: "none" });
+        window.dispatchEvent(new Event("mm:intro"));
       } else {
         lenis?.stop();
-        intro
-          .from(".loader .mk-l", { x: 22, duration: 1.1 }, 0.2)
-          .from(".loader .mk-r", { x: -22, duration: 1.1 }, 0.2)
-          .from(".loader .mk-d", { scale: 0, transformOrigin: "60px 60px", duration: 0.9, ease: "back.out(2.4)" }, 0.95)
-          .to(".loader-count", { opacity: 0, duration: 0.4 }, 1.4)
-          .to(".loader .mark-wrap", { scale: 0.6, opacity: 0, duration: 0.8 }, 1.7)
-          .to(".loader", { clipPath: "inset(0 0 100% 0)", duration: 1.1 }, 1.85)
-          .from(heroSplit.chars, { yPercent: 110, duration: 1.2, stagger: 0.025, ease: "expo.out" }, 2.25)
-          .from(".hero-fade", { y: 24, opacity: 0, duration: 1, stagger: 0.08, ease: "expo.out" }, 2.6)
-          .from(".nav", { yPercent: -100, duration: 1, ease: "expo.out" }, 2.5)
-          .add(() => lenis?.start());
-        const counter = { v: 0 };
-        gsap.to(counter, {
-          v: 100,
-          duration: 1.6,
-          ease: "power2.inOut",
-          onUpdate: () => {
-            const el = document.querySelector(".loader-count");
-            if (el) el.textContent = String(Math.round(counter.v)).padStart(3, "0");
-          },
-        });
+        gsap.set(heroSplit.chars, { yPercent: 110 });
+        gsap.set(".hero-fade", { y: 24, opacity: 0 });
+        gsap.set(".nav", { yPercent: -100 });
+
+        const countEl = document.querySelector(".ld-count");
+        const barEl = document.querySelector<HTMLElement>(".ld-bar i");
+        const prog = { v: 0 };
+        const paint = () => {
+          if (countEl) countEl.textContent = String(Math.round(prog.v)).padStart(3, "0");
+          if (barEl) barEl.style.transform = `scaleX(${prog.v / 100})`;
+        };
+        gsap
+          .timeline({ defaults: { ease: "expo.inOut" } })
+          .from(".ld-mark .mk-l", { x: 20, duration: 1.2 }, 0.1)
+          .from(".ld-mark .mk-r", { x: -20, duration: 1.2 }, 0.1)
+          .from(".ld-mark .mk-d", { scale: 0, transformOrigin: "60px 60px", duration: 0.9, ease: "back.out(2.4)" }, 0.9)
+          .from(".ld-word span", { yPercent: 110, duration: 1, stagger: 0.04, ease: "expo.out" }, 0.5)
+          .from(".ld-meta", { opacity: 0, duration: 0.8 }, 0.4);
+
+        // Run to 85% on time, then wait for the 3D scene (or 3s) before finishing.
+        const toEighty = gsap.to(prog, { v: 85, duration: 1.5, ease: "power2.out", onUpdate: paint });
+        let ready = false;
+        const onReady = () => (ready = true);
+        window.addEventListener("mm:3d-ready", onReady, { once: true });
+        const started = performance.now();
+        const finish = () => {
+          gsap
+            .timeline({ defaults: { ease: "expo.inOut" } })
+            .to(prog, { v: 100, duration: 0.5, ease: "power2.inOut", onUpdate: paint })
+            .to(".ld-inner", { opacity: 0, y: -16, duration: 0.6 }, "+=0.15")
+            .to(".ld-top", { yPercent: -100, duration: 1.2 }, "<0.2")
+            .to(".ld-bot", { yPercent: 100, duration: 1.2 }, "<")
+            .add(() => window.dispatchEvent(new Event("mm:intro")), "<0.1")
+            .set(".loader", { display: "none" })
+            .to(heroSplit.chars, { yPercent: 0, duration: 1.2, stagger: 0.022, ease: "expo.out" }, "-=0.75")
+            .to(".hero-fade", { y: 0, opacity: 1, duration: 1, stagger: 0.08, ease: "expo.out" }, "-=0.9")
+            .to(".nav", { yPercent: 0, duration: 1, ease: "expo.out" }, "<")
+            .add(() => {
+              gsap.set(".nav", { clearProps: "transform" });
+              lenis?.start();
+            });
+        };
+        const wait = () => {
+          if ((ready && !toEighty.isActive()) || performance.now() - started > 2600) finish();
+          else gsap.delayedCall(0.1, wait);
+        };
+        gsap.delayedCall(1.6, wait);
       }
 
       if (reduce) return;
@@ -189,6 +239,11 @@ export default function Site() {
         gsap.from(el, { y: 30, opacity: 0, duration: 1, ease: "expo.out", scrollTrigger: { trigger: el, start: "top 88%" } });
       });
 
+      /* ---------- Pillars light up as they cross the middle of the screen (touch) ---------- */
+      gsap.utils.toArray<HTMLElement>(".pillar").forEach((el) => {
+        ScrollTrigger.create({ trigger: el, start: "top 62%", end: "bottom 38%", toggleClass: "active" });
+      });
+
       /* ---------- Process line ---------- */
       gsap.fromTo(
         ".steps-line i",
@@ -221,6 +276,8 @@ export default function Site() {
       const el = id.length > 1 ? document.querySelector(id) : null;
       if (!el) return;
       e.preventDefault();
+      document.documentElement.classList.remove("menu-open");
+      lenis?.start();
       if (lenis) lenis.scrollTo(el as HTMLElement, { offset: 0, duration: 1.6 });
       else el.scrollIntoView();
     };
@@ -281,10 +338,29 @@ export default function Site() {
 
       {/* Loader */}
       <div className="loader" aria-hidden="true">
-        <div className="mark-wrap">
-          <Mark className="loader-mark" />
+        <div className="ld-top" />
+        <div className="ld-bot" />
+        <div className="ld-inner">
+          <div className="ld-row ld-meta mono">
+            <span>Middlemen</span>
+            <span>Pakistan → Worldwide</span>
+          </div>
+          <div className="ld-center">
+            <Mark className="ld-mark" title="" />
+            <div className="ld-word" aria-hidden="true">
+              {"WE KNOW PEOPLE".split("").map((c, i) => (
+                <span key={i}>{c === " " ? "\u00a0" : c}</span>
+              ))}
+            </div>
+          </div>
+          <div className="ld-foot">
+            <div className="ld-bar"><i /></div>
+            <div className="ld-row mono">
+              <span className="ld-meta">Opening the room</span>
+              <span className="ld-count tnum">000</span>
+            </div>
+          </div>
         </div>
-        <span className="loader-count mono">000</span>
       </div>
 
       {/* Nav */}
@@ -302,13 +378,56 @@ export default function Site() {
               <li><a href="#drop">Drop 01</a></li>
             </ul>
           </nav>
-          <a href="#intro" className="btn btn-sm magnet">Request an introduction</a>
+          <a href="#intro" className="btn btn-sm magnet nav-cta">Request an introduction</a>
+          <button
+            className={`burger ${menu ? "open" : ""}`}
+            aria-label={menu ? "Close menu" : "Open menu"}
+            aria-expanded={menu}
+            onClick={() => setMenu((m) => !m)}
+          >
+            <i />
+            <i />
+          </button>
         </div>
       </header>
+
+      <div className={`menu ${menu ? "open" : ""}`} aria-hidden={!menu}>
+        <div className="wrap menu-in">
+          <span className="mono muted">Menu</span>
+          <ul>
+            {[
+              ["#what", "What we do"],
+              ["#how", "How it works"],
+              ["#men", "The Men"],
+              ["#drop", "Drop 01"],
+              ["#intro", "Request an introduction"],
+            ].map(([h, l], i) => (
+              <li key={h} style={{ transitionDelay: menu ? `${0.08 + i * 0.05}s` : "0s" }}>
+                <a href={h} tabIndex={menu ? 0 : -1} onClick={() => setMenu(false)}>
+                  <span className="mono">0{i + 1}</span>
+                  {l}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <div className="menu-foot mono muted">
+            <span>hello@middlemen.group</span>
+            <span>Pakistan · Worldwide</span>
+          </div>
+        </div>
+      </div>
+
+      <a href="#intro" className={`dock ${dock ? "show" : ""}`}>
+        <Mark className="dock-mark" title="" />
+        Request an introduction
+      </a>
 
       <main id="top">
         {/* Hero */}
         <section className="hero">
+          <div className="hero-grid" aria-hidden="true" />
+          <Hero3D />
+          <div className="hero-vignette" aria-hidden="true" />
           <div className="wrap hero-in">
             <div className="hero-meta hero-fade mono">
               <span>Deal house</span>

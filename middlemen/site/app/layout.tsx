@@ -23,7 +23,12 @@ export const viewport: Viewport = { themeColor: "#0B0B0C", width: "device-width"
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
-      <body>{children}</body>
+      <body>
+        <noscript>
+          <style>{`.loader{display:none!important}`}</style>
+        </noscript>
+        {children}
+      </body>
     </html>
   );
 }
