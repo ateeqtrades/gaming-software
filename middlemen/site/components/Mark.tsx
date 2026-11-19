@@ -18,3 +18,12 @@ export function Wordmark({ className }: { className?: string }) {
     </svg>
   );
 }
+
+/** A horizontal slice of the wordmark, in font units (0 to WORDMARK.w). */
+export function WordmarkSlice({ from, to, className }: { from: number; to: number; className?: string }) {
+  return (
+    <svg className={className} viewBox={`${from} ${-WORDMARK.h} ${to - from} ${WORDMARK.h}`} aria-hidden="true">
+      <path d={WORDMARK.d} fill="currentColor" />
+    </svg>
+  );
+}

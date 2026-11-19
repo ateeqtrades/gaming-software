@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import Lenis from "lenis";
 import dynamic from "next/dynamic";
-import { Mark, Wordmark } from "./Mark";
+import { Mark, Wordmark, WordmarkSlice } from "./Mark";
 
 const Hero3D = dynamic(() => import("./Hero3D"), { ssr: false });
 
@@ -349,7 +349,11 @@ export default function Site() {
           </div>
           <div className="ld-center">
             <div className="ld-back" aria-hidden="true">
-              <Wordmark className="ld-wm" />
+              <Wordmark className="ld-wm ld-full" />
+              <div className="ld-wm ld-stack">
+                <WordmarkSlice from={-30} to={5334} className="ld-l1" />
+                <WordmarkSlice from={5334} to={8513} className="ld-l2" />
+              </div>
             </div>
             <Mark className="ld-mark" title="" />
             <div className="ld-word" aria-hidden="true">
