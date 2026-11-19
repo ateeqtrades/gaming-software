@@ -141,7 +141,9 @@ export default function Site() {
           .from(".ld-mark .mk-r", { x: -20, duration: 1.2 }, 0.1)
           .from(".ld-mark .mk-d", { scale: 0, transformOrigin: "60px 60px", duration: 0.9, ease: "back.out(2.4)" }, 0.9)
           .from(".ld-word span", { yPercent: 110, duration: 1, stagger: 0.04, ease: "expo.out" }, 0.5)
-          .from(".ld-meta", { opacity: 0, duration: 0.8 }, 0.4);
+          .from(".ld-meta", { opacity: 0, duration: 0.8 }, 0.4)
+          .fromTo(".ld-wm", { yPercent: 18, opacity: 0, scale: 1.06 }, { yPercent: 0, opacity: 1, scale: 1, duration: 1.6, ease: "expo.out" }, 0)
+          .to(".ld-wm", { scale: 1.03, duration: 3, ease: "none" }, 1.6);
 
         // Run to 85% on time, then wait for the 3D scene (or 3s) before finishing.
         const toEighty = gsap.to(prog, { v: 85, duration: 1.5, ease: "power2.out", onUpdate: paint });
@@ -346,6 +348,9 @@ export default function Site() {
             <span>Pakistan → Worldwide</span>
           </div>
           <div className="ld-center">
+            <div className="ld-back" aria-hidden="true">
+              <Wordmark className="ld-wm" />
+            </div>
             <Mark className="ld-mark" title="" />
             <div className="ld-word" aria-hidden="true">
               {"WE KNOW PEOPLE".split("").map((c, i) => (

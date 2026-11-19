@@ -89,7 +89,12 @@ h3 { font-family: var(--display); font-weight: 700; font-stretch: 112%; letter-s
   padding: max(24px, env(safe-area-inset-top, 0px)) var(--gut) max(24px, env(safe-area-inset-bottom, 0px));
 }
 .ld-row { display: flex; justify-content: space-between; gap: 16px; color: var(--stone); }
-.ld-center { display: grid; place-items: center; align-content: center; gap: 28px; }
+.ld-center { display: grid; place-items: center; align-content: center; gap: 28px; position: relative; }
+.ld-back { position: absolute; left: 50%; top: 50%; width: 92vw; transform: translate(-50%, -58%); pointer-events: none; }
+.ld-wm { display: block; width: 100%; height: auto; color: var(--bone); opacity: 1; }
+.ld-wm path { fill: rgba(236, 232, 225, .06); stroke: rgba(236, 232, 225, .16); stroke-width: 6; }
+.ld-mark, .ld-word { position: relative; z-index: 1; }
+@media (max-width: 640px) { .ld-back { width: 165vw; transform: translate(-50%, -66%); } .ld-wm path { stroke-width: 8; } }
 .ld-mark { width: clamp(64px, 8vw, 104px); color: var(--bone); }
 .ld-word { display: flex; overflow: hidden; font-family: var(--display); font-weight: 800; font-stretch: 125%; letter-spacing: .28em; font-size: clamp(11px, 1vw, 13px); padding-left: .28em; }
 .ld-word span { display: inline-block; }
