@@ -33,3 +33,26 @@ Send only after Bagh agrees, and confirm the address first (listed: avsltd@fasco
 Changes from the brief's Appendix B draft:
 - Add after the product list: "We note that Pakistan and the Maldives have agreed in principle to set up joint working groups on trade, including a study of a direct Karachi to Malé shipping service. We would welcome the chance to take part in any exporter and importer meetings, including the trade delegation expected in December."
 - Attribute that news to Radio Pakistan (19 Nov 2026) if asked, not to Profit.
+
+## 4. Freight quote request (email to the Karachi agents in contacts.md)
+
+This is not buyer contact, so it can go before the agreement is signed. Ask Bagh first if he already has a shipping agent.
+
+Subject: Freight enquiry: bulk sand and aggregate, Karachi to Malé, Maldives
+
+Dear Sir/Madam,
+
+We represent a Pakistani supplier of construction materials and are preparing quotations for buyers in the Maldives. We would be grateful for an indicative freight rate for the following:
+
+- Cargo: washed river sand and crushed stone aggregate (5, 10, 20 mm), in bulk. Separately, armour rock in 1 to 5 tonne blocks.
+- Quantity: 3,000 to 5,000 tonnes per shipment, with possible monthly repeat shipments.
+- Route: Karachi or Port Qasim to Malé (or Thilafushi / Hulhumalé), Maldives.
+- Vessel: barge with tug, or a small bulk / general cargo vessel, whichever you advise.
+- Timing: first shipment in about [2 to 3] months.
+
+Please let us know the rate per tonne, port and loading costs at Karachi, expected transit time, any seasonal limits (we understand June to September is difficult), and how long the rate is valid.
+
+Best regards,
+[Your Name]
+Middlemen · We know people.
+[Phone / WhatsApp] · [Email]
