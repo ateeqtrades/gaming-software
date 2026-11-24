@@ -167,8 +167,10 @@ export default function Hero3D() {
       const k2 = clamp((sp - 0.4) / 0.6);
       const k2e = k2 * k2;
 
-      assemble += (assembleTarget - assemble) * Math.min(1, dt * 2.2);
-      const a = ease(Math.min(1, assemble));
+      // The entrance runs on a fixed 2.8 second clock so it is always seen, whatever the frame rate.
+      if (assembleTarget > assemble) assemble = Math.min(1, assemble + dt / 2.8);
+      const a = 1 - Math.pow(1 - assemble, 3);
+      void ease;
       mouse.x += (mouse.tx - mouse.x) * dt * 3;
       mouse.y += (mouse.ty - mouse.y) * dt * 3;
 
@@ -178,22 +180,25 @@ export default function Hero3D() {
       rig.position.set(lerp(bx, 0, k1), lerp(by, 0, k1), 0);
       rig.scale.setScalar(lerp(bs, mobile ? 0.9 : 1.25, k1));
 
-      const spread = OFF * (0.12 + 0.88 * a) + k2e * 7.5;
-      left.position.x = -spread;
-      right.position.x = spread;
-      left.rotation.y = k2e * 1.2;
-      right.rotation.y = -k2e * 1.2;
-      const dotIn = Math.max(0.0001, Math.min(1, (a - 0.45) / 0.55));
+      // Flow in: the pillars sweep in from far off each side on opposite arcs, turning as they come,
+      // and settle into place; the point rises from below once they are nearly home.
+      const far = 1 - a;
+      const spread = OFF + far * 7 + k2e * 7.5;
+      left.position.set(-spread, far * 2.2, -far * 3);
+      right.position.set(spread, -far * 2.2, -far * 3);
+      left.rotation.set(far * 1.4, far * 3.2 + k2e * 1.2, far * 0.6);
+      right.rotation.set(-far * 1.4, -far * 3.2 - k2e * 1.2, -far * 0.6);
+      const dotIn = smooth(Math.max(0.0001, Math.min(1, (a - 0.55) / 0.45)));
       dot.scale.setScalar(dotIn * (1 + k2e * k2 * 15));
-      dot.position.y = reduce ? 0 : Math.sin(t * 1.4) * 0.05 * (1 - k2);
+      dot.position.y = (reduce ? 0 : Math.sin(t * 1.4) * 0.05 * (1 - k2)) - (1 - dotIn) * 1.6;
       dot.position.z = 0.1 * Math.sin(t * 0.9) * (1 - k2);
 
       const calm = 1 - k1;
       const idle = reduce ? 0 : Math.sin(t * 0.35) * 0.32 * calm;
-      mark.rotation.y = idle + mouse.x * 0.45 * (1 - k2) + k1 * Math.PI * 2 + (1 - a) * -1.2;
+      mark.rotation.y = idle + mouse.x * 0.45 * (1 - k2) + k1 * Math.PI * 2 + far * -0.9;
       mark.rotation.x = mouse.y * 0.18 * (1 - k2) + (reduce ? 0 : Math.sin(t * 0.5) * 0.04 * calm);
       mark.position.y = reduce ? 0 : Math.sin(t * 0.7) * 0.06 * calm;
-      rig.rotation.z = (1 - a) * 0.25;
+      rig.rotation.z = far * 0.12;
       glow.visible = k1 < 0.6;
       (glow.material as THREE.MeshBasicMaterial).opacity = 1 - k1 / 0.6;
 

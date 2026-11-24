@@ -9,40 +9,52 @@ import { useEffect, useRef, useState } from "react";
 const SRC = "/audio/theme.mp3";
 const VOLUME = 0.45;
 
-/** A short vinyl-style crackle, made in the browser, played just before the music comes in. */
-function crackle(seconds = 3.2) {
+/** The ambient pad: a soft chord that swells in, opens up, then hands over to the song. Made in the browser. */
+function padIntro(seconds = 7.5) {
   try {
     const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
     const ctx = new Ctx();
-    const n = Math.floor(ctx.sampleRate * seconds);
-    const buf = ctx.createBuffer(1, n, ctx.sampleRate);
-    const d = buf.getChannelData(0);
-    for (let i = 0; i < n; i++) {
-      d[i] = (Math.random() * 2 - 1) * 0.012; // surface hiss
-      if (Math.random() < 0.0009) {
-        // a pop: a sharp click that dies away in a few milliseconds
-        const amp = 0.25 + Math.random() * 0.6;
-        const len = 20 + Math.floor(Math.random() * 90);
-        for (let k = 0; k < len && i + k < n; k++) d[i + k] += (Math.random() * 2 - 1) * amp * Math.exp(-k / (len / 4));
-      }
-    }
-    const src = ctx.createBufferSource();
-    src.buffer = buf;
-    const hp = ctx.createBiquadFilter();
-    hp.type = "highpass";
-    hp.frequency.value = 900;
-    const g = ctx.createGain();
-    g.gain.setValueAtTime(0.0001, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.65, ctx.currentTime + 0.08);
-    g.gain.setValueAtTime(0.65, ctx.currentTime + seconds - 1.2);
-    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + seconds);
-    src.connect(hp);
-    hp.connect(g);
-    g.connect(ctx.destination);
-    src.start();
-    src.onended = () => ctx.close();
+    const t0 = ctx.currentTime;
+    const master = ctx.createGain();
+    master.gain.setValueAtTime(0.0001, t0);
+    master.gain.exponentialRampToValueAtTime(0.34, t0 + 1.6);
+    master.gain.setValueAtTime(0.34, t0 + seconds - 3.6);
+    master.gain.exponentialRampToValueAtTime(0.0001, t0 + seconds);
+    const filter = ctx.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.Q.value = 0.7;
+    filter.frequency.setValueAtTime(380, t0);
+    filter.frequency.exponentialRampToValueAtTime(2400, t0 + seconds * 0.6); // the pad opens up as it swells
+    const delay = ctx.createDelay(1.5);
+    delay.delayTime.value = 0.46;
+    const fb = ctx.createGain();
+    fb.gain.value = 0.4;
+    const wet = ctx.createGain();
+    wet.gain.value = 0.4;
+    filter.connect(master);
+    filter.connect(delay);
+    delay.connect(fb);
+    fb.connect(delay);
+    delay.connect(wet);
+    wet.connect(master);
+    master.connect(ctx.destination);
+    [55, 110, 164.81, 220, 261.63, 329.63].forEach((f, i) =>
+      [-6, 7].forEach((detune) => {
+        const o = ctx.createOscillator();
+        o.type = i < 2 ? "sine" : "triangle";
+        o.frequency.value = f;
+        o.detune.value = detune;
+        const g = ctx.createGain();
+        g.gain.value = i < 2 ? 0.2 : 0.07;
+        o.connect(g);
+        g.connect(filter);
+        o.start(t0);
+        o.stop(t0 + seconds + 0.2);
+      })
+    );
+    window.setTimeout(() => ctx.close(), (seconds + 1) * 1000);
   } catch {
-    /* no Web Audio: skip the crackle */
+    /* no Web Audio: skip the intro */
   }
 }
 
@@ -77,8 +89,8 @@ export default function Sound() {
       setPlaying(true);
       if (!crackled.current) {
         crackled.current = true;
-        crackle();
-        window.setTimeout(() => wanted.current && fadeTo(VOLUME, undefined, 0.01), 1500); // crackle alone first, then the song rises over about three seconds
+        padIntro();
+        window.setTimeout(() => wanted.current && fadeTo(VOLUME, undefined, 0.005), 3200); // crackle alone first, then the song rises over about three seconds
       } else fadeTo(VOLUME);
       return true;
     } catch {
