@@ -10,7 +10,7 @@ const SRC = "/audio/theme.mp3";
 const VOLUME = 0.45;
 
 /** A short vinyl-style crackle, made in the browser, played just before the music comes in. */
-function crackle(seconds = 5) {
+function crackle(seconds = 3.2) {
   try {
     const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
     const ctx = new Ctx();
@@ -18,10 +18,10 @@ function crackle(seconds = 5) {
     const buf = ctx.createBuffer(1, n, ctx.sampleRate);
     const d = buf.getChannelData(0);
     for (let i = 0; i < n; i++) {
-      d[i] = (Math.random() * 2 - 1) * 0.02; // surface hiss
-      if (Math.random() < 0.0016) {
+      d[i] = (Math.random() * 2 - 1) * 0.012; // surface hiss
+      if (Math.random() < 0.0009) {
         // a pop: a sharp click that dies away in a few milliseconds
-        const amp = 0.35 + Math.random() * 0.65;
+        const amp = 0.25 + Math.random() * 0.6;
         const len = 20 + Math.floor(Math.random() * 90);
         for (let k = 0; k < len && i + k < n; k++) d[i + k] += (Math.random() * 2 - 1) * amp * Math.exp(-k / (len / 4));
       }
@@ -33,8 +33,8 @@ function crackle(seconds = 5) {
     hp.frequency.value = 900;
     const g = ctx.createGain();
     g.gain.setValueAtTime(0.0001, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.95, ctx.currentTime + 0.06);
-    g.gain.setValueAtTime(0.95, ctx.currentTime + seconds - 2.4);
+    g.gain.exponentialRampToValueAtTime(0.65, ctx.currentTime + 0.08);
+    g.gain.setValueAtTime(0.65, ctx.currentTime + seconds - 1.2);
     g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + seconds);
     src.connect(hp);
     hp.connect(g);
@@ -78,7 +78,7 @@ export default function Sound() {
       if (!crackled.current) {
         crackled.current = true;
         crackle();
-        window.setTimeout(() => wanted.current && fadeTo(VOLUME, undefined, 0.006), 2400); // crackle alone first, then the song rises over about three seconds
+        window.setTimeout(() => wanted.current && fadeTo(VOLUME, undefined, 0.01), 1500); // crackle alone first, then the song rises over about three seconds
       } else fadeTo(VOLUME);
       return true;
     } catch {
