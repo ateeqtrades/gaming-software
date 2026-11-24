@@ -7,6 +7,7 @@ const body = Inter_Tight({ subsets: ["latin"], weight: ["300", "400", "500", "60
 const mono = Geist_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--f-mono", display: "swap" });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://middlemen.world"),
   title: "Middlemen · We know people.",
   description:
     "Middlemen is a deal house based in Pakistan, working worldwide. We connect businesses to buyers, partners and capital, and stay in the room until it closes.",

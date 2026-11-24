@@ -77,6 +77,11 @@ function Clock() {
   return <span className="tnum">{t} PKT</span>;
 }
 
+const WHATSAPP = "923082612601";
+function openWhatsApp(text: string) {
+  window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+}
+
 export default function Site() {
   const root = useRef<HTMLDivElement>(null);
   const lenisRef = useRef<Lenis | null>(null);
@@ -477,7 +482,7 @@ export default function Site() {
             ))}
           </ul>
           <div className="menu-foot mono muted">
-            <span>hello@middlemen.group</span>
+            <span>+92 308 2612601</span>
             <span>Pakistan · Worldwide</span>
           </div>
         </div>
@@ -658,18 +663,20 @@ export default function Site() {
                 the list hears first.
               </p>
               {sent === "drop" ? (
-                <p className="ok mono" role="status">You are on the list.</p>
+                <p className="ok mono" role="status">WhatsApp opened. Press send there to join.</p>
               ) : (
                 <form
                   className="drop-form fade"
                   onSubmit={(e) => {
                     e.preventDefault();
+                    const name = (document.getElementById("drop-name") as HTMLInputElement).value.trim();
+                    openWhatsApp(`Hello Middlemen, add me to the Drop 01 list.${name ? "\nName: " + name : ""}`);
                     setSent("drop");
                   }}
                 >
-                  <label htmlFor="drop-email" className="sr-only">Email</label>
-                  <input id="drop-email" type="email" required placeholder="Your email" autoComplete="email" />
-                  <button className="btn magnet" type="submit">Join the list</button>
+                  <label htmlFor="drop-name" className="sr-only">Your name</label>
+                  <input id="drop-name" required placeholder="Your name" autoComplete="name" />
+                  <button className="btn magnet" type="submit">Join on WhatsApp</button>
                 </form>
               )}
             </div>
@@ -700,13 +707,21 @@ export default function Site() {
             {sent === "intro" ? (
               <div className="ok-box" role="status">
                 <Mark className="ok-mark" title="" />
-                <p>Received. One of us will reply within two working days.</p>
+                <p>WhatsApp opened in a new tab. Press send there and one of us will reply within two working days.</p>
               </div>
             ) : (
               <form
                 className="intro-form fade"
                 onSubmit={(e) => {
                   e.preventDefault();
+                  const v = (id: string) => ((document.getElementById(id) as HTMLInputElement | HTMLTextAreaElement)?.value || "").trim();
+                  const lines = ["Hello Middlemen, I would like an introduction.", ""];
+                  if (v("f-name")) lines.push("Name: " + v("f-name"));
+                  if (v("f-co")) lines.push("Company: " + v("f-co"));
+                  if (v("f-where")) lines.push("Where we operate: " + v("f-where"));
+                  if (needs.length) lines.push("We need: " + needs.join(", "));
+                  if (v("f-msg")) lines.push("", v("f-msg"));
+                  openWhatsApp(lines.join("\n"));
                   setSent("intro");
                 }}
               >
@@ -721,10 +736,6 @@ export default function Site() {
                   </div>
                 </div>
                 <div className="row2">
-                  <div className="field">
-                    <label htmlFor="f-mail">Email</label>
-                    <input id="f-mail" type="email" required autoComplete="email" />
-                  </div>
                   <div className="field">
                     <label htmlFor="f-where">Where you operate</label>
                     <input id="f-where" placeholder="Country or city" />
@@ -751,8 +762,8 @@ export default function Site() {
                   <textarea id="f-msg" rows={4} placeholder="What you sell, and who you want in the room." />
                 </div>
                 <div className="form-foot">
-                  <span className="mono muted">Or write to hello@middlemen.group</span>
-                  <button className="btn btn-lg magnet" type="submit">Send request</button>
+                  <span className="mono muted">Opens WhatsApp with your request written out</span>
+                  <button className="btn btn-lg magnet" type="submit">Send on WhatsApp</button>
                 </div>
               </form>
             )}
@@ -766,12 +777,12 @@ export default function Site() {
             <p className="foot-line">We know people.</p>
             <div className="foot-cols mono">
               <div>
-                <span className="muted">Write</span>
-                <span>hello@middlemen.group</span>
+                <span className="muted">WhatsApp</span>
+                <span><a href="https://wa.me/923082612601" target="_blank" rel="noopener">+92 308 2612601</a></span>
               </div>
               <div>
-                <span className="muted">Follow</span>
-                <span>Instagram · LinkedIn · X</span>
+                <span className="muted">WhatsApp</span>
+                <span><a href="https://wa.me/923243461299" target="_blank" rel="noopener">+92 324 3461299</a></span>
               </div>
               <div>
                 <span className="muted">Based</span>
