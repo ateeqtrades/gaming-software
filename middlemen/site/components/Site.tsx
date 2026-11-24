@@ -8,6 +8,7 @@ import Lenis from "lenis";
 import dynamic from "next/dynamic";
 import { Mark, Wordmark, WordmarkSlice } from "./Mark";
 
+const Sound = dynamic(() => import("./Sound"), { ssr: false });
 const Hero3D = dynamic(() => import("./Hero3D"), { ssr: false });
 
 const useIso = typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -244,7 +245,7 @@ export default function Site() {
         scrollTrigger: {
           trigger: ".between",
           start: "top top",
-          end: () => `+=${window.innerHeight * (2.2 + words.length * 0.5)}`,
+          end: () => `+=${window.innerHeight * (1.3 + words.length * 0.3)}`,
           scrub: 0.6,
           pin: true,
           invalidateOnRefresh: true,
@@ -312,7 +313,7 @@ export default function Site() {
       const dist = () => track.scrollWidth - window.innerWidth;
       const howTl = gsap.timeline({
         defaults: { ease: "none" },
-        scrollTrigger: { trigger: ".how", start: "top top", end: () => "+=" + dist(), scrub: 0.6, pin: true, invalidateOnRefresh: true },
+        scrollTrigger: { trigger: ".how", start: "top top", end: () => "+=" + dist() * 0.55, scrub: 0.6, pin: true, invalidateOnRefresh: true },
       });
       howTl.to(track, { x: () => -dist() }, 0).fromTo(".how-bar i", { scaleX: 0.02 }, { scaleX: 1 }, 0);
       gsap.utils.toArray<HTMLElement>(".how-word").forEach((w) => {
@@ -423,6 +424,7 @@ export default function Site() {
   return (
     <div ref={root}>
       <div className="grain" aria-hidden="true" />
+      <Sound />
       <div className="cursor" aria-hidden="true" />
 
       {/* Loader */}
