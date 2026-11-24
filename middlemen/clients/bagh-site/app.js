@@ -205,7 +205,7 @@
       if (val("q-island")) lines.push("Delivery: " + val("q-island"));
       if (val("q-co")) lines.push("Company: " + val("q-co"));
       if (val("q-name")) lines.push("Name: " + val("q-name"));
-      note.textContent = "WhatsApp opened in a new tab. Press send there.";
+      note.textContent = "WhatsApp opened in a new tab. Press send there. Or email contact@baghmineral.com.";
       window.open("https://wa.me/" + WA + "?text=" + encodeURIComponent(lines.join("\n")), "_blank", "noopener");
     });
   }
