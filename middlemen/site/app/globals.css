@@ -442,3 +442,46 @@ html:not(.js) .bt-word:first-child { opacity: 1; }
   .bt-l { transform: translateX(-34vw); } .bt-r { transform: translateX(34vw); }
   .bt-word:first-child { opacity: 1; }
 }
+
+/* ---------- v3: persistent 3D stage, zoom wipe, sideways process ---------- */
+.hero-3d { position: fixed !important; inset: 0 !important; width: auto !important; height: auto !important; z-index: 0; pointer-events: none; }
+.bone-wipe { position: fixed; inset: 0; z-index: 0; background: var(--bone); opacity: 0; pointer-events: none; }
+main > section, .foot { position: relative; z-index: 1; }
+.what, .how, .how-pin, .sectors, .men-sec, .intro, .between { background: var(--ink); }
+.pin-spacer { position: relative; z-index: 1; background: var(--ink); }
+.foot { background: var(--ink); }
+.hero { background: transparent; }
+.hero::before { display: none; }
+.zoom { height: 240vh; }
+.manifesto { background: var(--bone); color: var(--ink); padding-block: clamp(140px, 22vw, 320px); }
+.manifesto::before { display: none; }
+.manifesto p { font-weight: 800; font-stretch: 122%; font-size: clamp(40px, 8.400vw, 150px); line-height: .92; letter-spacing: -.03em; max-width: 12ch; }
+.mq-track { animation: none !important; }
+.sectors:hover .mq-track { animation-play-state: running; }
+
+.how { padding: 0 !important; }
+.how-pin { height: 100svh; overflow: hidden; position: relative; display: flex; align-items: center; }
+.how-k { position: absolute; left: var(--gut); top: 96px; }
+.how-track { display: flex; will-change: transform; }
+.how-panel { flex: 0 0 auto; width: auto; min-width: 62vw; padding-left: var(--gut); padding-right: 10vw; display: grid; gap: 14px; align-content: center; }
+.how-panel:last-child { min-width: 100vw; }
+.how-n { color: var(--stone); }
+.how-word { font-family: var(--display); font-weight: 800; font-stretch: 125%; font-size: clamp(64px, 17vw, 300px); line-height: .86; letter-spacing: -.035em; text-transform: uppercase; transform-origin: left bottom; }
+.how-panel p { color: var(--stone); font-size: clamp(18px, 1.800vw, 26px); font-weight: 300; }
+.how-bar { position: absolute; left: var(--gut); right: var(--gut); bottom: 56px; height: 2px; background: var(--line); }
+.how-bar i { display: block; height: 100%; background: var(--bone); transform-origin: left; }
+.p-body p { font-size: clamp(17px, 1.500vw, 21px); }
+
+@media (max-width: 960px) {
+  .hero { min-height: 100svh !important; justify-content: flex-end; padding-top: 0 !important; }
+  .how-panel { min-width: 88vw; }
+  .how-word { font-size: 19vw; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-3d { position: absolute !important; height: 100svh !important; }
+  .zoom { display: none; }
+  .how-pin { height: auto; padding-block: 120px; }
+  .how-track { flex-direction: column; gap: 60px; }
+  .how-panel, .how-panel:last-child { width: auto; }
+  .how-k { position: static; }
+}

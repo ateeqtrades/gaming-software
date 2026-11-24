@@ -18,25 +18,25 @@ const PILLARS = [
   {
     k: "Connect",
     t: "Introductions",
-    d: "We put you in front of the people who move your business: buyers, distributors, partners, investors and talent. Warm, vetted and on the record.",
+    d: "Buyers, partners, capital. Warm and vetted.",
   },
   {
     k: "Close",
     t: "Sales",
-    d: "We open pipeline and take it to signature. We are paid like a partner, on outcomes, not hours.",
+    d: "From pipeline to signature. Paid on outcomes.",
   },
   {
     k: "Build",
     t: "Infrastructure",
-    d: "The website, the brand and the content a deal needs to land. Built in house, only for the businesses we represent.",
+    d: "The site and brand a deal needs to land.",
   },
 ];
 
 const STEPS = [
-  { t: "Brief", d: "One conversation. What you sell, who needs it, what a win looks like." },
-  { t: "Map", d: "We map the market and the people in it, and choose who to call first." },
-  { t: "Introduce", d: "Warm introductions, with the material that makes the first meeting count." },
-  { t: "Close", d: "We stay in the room through pricing, paperwork and the first order." },
+  { t: "Brief", d: "One conversation." },
+  { t: "Map", d: "The market, and who to call first." },
+  { t: "Introduce", d: "Warm, and ready for the first meeting." },
+  { t: "Close", d: "We stay until the first order." },
 ];
 
 const SECTORS = [
@@ -307,12 +307,37 @@ export default function Site() {
         ScrollTrigger.create({ trigger: el, start: "top 62%", end: "bottom 38%", toggleClass: "active" });
       });
 
-      /* ---------- Process line ---------- */
-      gsap.fromTo(
-        ".steps-line i",
-        { scaleX: 0 },
-        { scaleX: 1, ease: "none", scrollTrigger: { trigger: ".steps", start: "top 75%", end: "bottom 60%", scrub: true } }
+      /* ---------- How: pinned horizontal scroll ---------- */
+      const track = document.querySelector<HTMLElement>(".how-track")!;
+      const dist = () => track.scrollWidth - window.innerWidth;
+      const howTl = gsap.timeline({
+        defaults: { ease: "none" },
+        scrollTrigger: { trigger: ".how", start: "top top", end: () => "+=" + dist(), scrub: 0.6, pin: true, invalidateOnRefresh: true },
+      });
+      howTl.to(track, { x: () => -dist() }, 0).fromTo(".how-bar i", { scaleX: 0.02 }, { scaleX: 1 }, 0);
+      gsap.utils.toArray<HTMLElement>(".how-word").forEach((w) => {
+        gsap.fromTo(w, { skewX: -14, opacity: 0.25 }, {
+          skewX: 0, opacity: 1, ease: "none",
+          scrollTrigger: { trigger: w, containerAnimation: howTl, start: "left 90%", end: "left 35%", scrub: true },
+        });
+      });
+
+      /* ---------- Marquee speed follows scroll speed ---------- */
+      const mqs = gsap.utils.toArray<HTMLElement>(".mq-track").map((t, i) =>
+        gsap.fromTo(t, { xPercent: i % 2 ? -50 : 0 }, { xPercent: i % 2 ? 0 : -50, duration: 40 + i * 8, ease: "none", repeat: -1 })
       );
+      ScrollTrigger.create({
+        onUpdate: (self) => {
+          const v = Math.min(8, 1 + Math.abs(self.getVelocity()) / 220);
+          mqs.forEach((t) => { gsap.killTweensOf(t, "timeScale"); t.timeScale(v); gsap.to(t, { timeScale: 1, duration: 1.2, ease: "power2.out" }); });
+          gsap.to(".mq-item", { skewX: gsap.utils.clamp(-14, 14, self.getVelocity() / -180), duration: 0.3, overwrite: true });
+        },
+      });
+      ScrollTrigger.addEventListener("scrollEnd", () => gsap.to(".mq-item", { skewX: 0, duration: 0.6, overwrite: true }));
+
+      /* ---------- Hero text leaves fast, so the 3D mark has the stage ---------- */
+      gsap.to(".hero-in, .scroll-cue", { opacity: 0, y: -60, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "45% top", scrub: true } });
+
 
       /* ---------- Founders ---------- */
       gsap.from(".man", {
@@ -493,12 +518,13 @@ export default function Site() {
         Request an introduction
       </a>
 
+      <Hero3D />
+      <div className="bone-wipe" aria-hidden="true" />
+
       <main id="top">
         {/* Hero */}
         <section className="hero">
           <div className="hero-grid" aria-hidden="true" />
-          <Hero3D />
-          <div className="hero-vignette" aria-hidden="true" />
           <div className="wrap hero-in">
             <div className="hero-meta hero-fade mono">
               <span>Deal house</span>
@@ -511,8 +537,7 @@ export default function Site() {
             </h1>
             <div className="hero-foot">
               <p className="hero-fade lede">
-                Middlemen sits between businesses and what they need next. Buyers, partners, capital and the right rooms.
-                Based in Pakistan, working across the globe.
+                Between businesses and what they need next.
               </p>
               <div className="hero-fade hero-ctas">
                 <a href="#intro" className="btn magnet">Request an introduction</a>
@@ -523,15 +548,13 @@ export default function Site() {
           <div className="scroll-cue hero-fade mono" aria-hidden="true"><i /> Scroll</div>
         </section>
 
+        {/* Zoom: the mark opens and the point fills the screen */}
+        <section className="zoom" aria-hidden="true" />
+
         {/* Manifesto */}
         <section className="manifesto">
           <div className="wrap">
-            <span className="kicker mono">The idea</span>
-            <p>
-              Every business is one introduction away from its next chapter. Most never get it. They sell to the people they
-              already know and wait for the rest to find them. We are the people in the middle. We know who needs what, we make
-              the call, and we stay until it closes.
-            </p>
+            <p>Every business is one introduction away.</p>
           </div>
         </section>
 
@@ -583,24 +606,20 @@ export default function Site() {
           </div>
         </section>
 
-        {/* How it works */}
-        <section className="how" id="how">
-          <div className="wrap">
-            <div className="sec-head">
-              <span className="kicker mono">How a mandate runs</span>
-              <h2 className="reveal">From first call to first order.</h2>
-            </div>
-            <div className="steps">
-              <div className="steps-line" aria-hidden="true"><i /></div>
-              {STEPS.map((s, i) => (
-                <div className="step fade" key={s.t}>
-                  <span className="step-dot" aria-hidden="true" />
-                  <span className="mono step-n">Step {i + 1}</span>
-                  <h3>{s.t}</h3>
-                  <p>{s.d}</p>
+        {/* How it works: pinned, scrolls sideways */}
+        <section className="how" id="how" aria-label="How a mandate runs">
+          <div className="how-pin">
+            <span className="kicker mono how-k">How a mandate runs</span>
+            <div className="how-track">
+              {STEPS.map((st, i) => (
+                <div className="how-panel" key={st.t}>
+                  <span className="how-n mono">0{i + 1} / 0{STEPS.length}</span>
+                  <h3 className="how-word">{st.t}</h3>
+                  <p>{st.d}</p>
                 </div>
               ))}
             </div>
+            <div className="how-bar" aria-hidden="true"><i /></div>
           </div>
         </section>
 

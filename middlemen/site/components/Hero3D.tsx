@@ -100,8 +100,10 @@ export default function Hero3D() {
     let assemble = reduce ? 1 : 0; // 0 = closed, 1 = assembled
     let assembleTarget = reduce ? 1 : 0;
     let mobile = false;
+    let wide = false;
     const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
-    let scrollP = 0;
+    const wipe = document.querySelector<HTMLElement>(".bone-wipe");
+    const zoomEl = document.querySelector<HTMLElement>(".zoom");
 
     const layout = () => {
       const w = el.clientWidth;
@@ -109,11 +111,9 @@ export default function Hero3D() {
       renderer.setSize(w, h, false);
       camera.aspect = w / Math.max(h, 1);
       mobile = w < 760;
-      camera.fov = mobile ? 34 : 30;
+      wide = camera.aspect > 1.9;
+      camera.fov = mobile ? 38 : 30;
       camera.updateProjectionMatrix();
-      const wide = camera.aspect > 1.9;
-      rig.position.set(mobile ? 0 : wide ? 2.6 : 1.95, mobile ? 0.05 : 0.52, 0);
-      rig.scale.setScalar(mobile ? 0.92 : 0.82);
     };
     layout();
     const ro = new ResizeObserver(layout);
@@ -122,9 +122,6 @@ export default function Hero3D() {
     const onMove = (e: PointerEvent) => {
       mouse.tx = (e.clientX / window.innerWidth) * 2 - 1;
       mouse.ty = (e.clientY / window.innerHeight) * 2 - 1;
-    };
-    const onScroll = () => {
-      scrollP = Math.min(1, Math.max(0, window.scrollY / Math.max(1, el.clientHeight)));
     };
     const onIntro = () => {
       assembleTarget = 1;
@@ -136,42 +133,69 @@ export default function Hero3D() {
       mouse.ty = Math.max(-1, Math.min(1, (e.beta - 45) / 40));
     };
     window.addEventListener("pointermove", onMove);
-    window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("mm:intro", onIntro);
     window.addEventListener("deviceorientation", onTilt);
-
-    let visible = true;
-    const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting));
-    io.observe(el);
 
     const clock = new THREE.Clock();
     let raf = 0;
     let first = true;
+    let parked = false;
+    const clamp = (v: number) => Math.max(0, Math.min(1, v));
     const ease = (t: number) => 1 - Math.pow(1 - t, 4);
+    const smooth = (t: number) => t * t * (3 - 2 * t);
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
     const frame = () => {
       raf = requestAnimationFrame(frame);
-      if (!visible && !first) return;
       const dt = Math.min(clock.getDelta(), 0.05);
       const t = clock.elapsedTime;
+
+      // Scroll story: 0 to .4 the mark travels to the centre and turns once; .4 to 1 the pillars part
+      // and the point grows until it fills the screen, which becomes the next (bone) section.
+      // The zone ends when the next section's top edge reaches the bottom of the screen.
+      const zone = zoomEl ? zoomEl.offsetTop + zoomEl.offsetHeight - window.innerHeight : window.innerHeight;
+      const sp = reduce ? 0 : clamp(window.scrollY / Math.max(1, zone));
+      const past = window.scrollY > zone + window.innerHeight * 2.5;
+      if (wipe) wipe.style.opacity = past ? "0" : String(clamp((sp - 0.8) / 0.14));
+      if (sp >= 1 && !first) {
+        if (!parked) { parked = true; renderer.domElement.style.visibility = "hidden"; }
+        return;
+      }
+      if (parked) { parked = false; renderer.domElement.style.visibility = "visible"; }
+
+      const k1 = smooth(clamp(sp / 0.4));
+      const k2 = clamp((sp - 0.4) / 0.6);
+      const k2e = k2 * k2;
 
       assemble += (assembleTarget - assemble) * Math.min(1, dt * 2.2);
       const a = ease(Math.min(1, assemble));
       mouse.x += (mouse.tx - mouse.x) * dt * 3;
       mouse.y += (mouse.ty - mouse.y) * dt * 3;
 
-      const spread = OFF * (0.12 + 0.88 * a) + scrollP * 0.35;
+      const bx = mobile ? 0 : wide ? 2.6 : 1.95;
+      const by = mobile ? 1.55 : 0.52;
+      const bs = mobile ? 0.6 : 0.82;
+      rig.position.set(lerp(bx, 0, k1), lerp(by, 0, k1), 0);
+      rig.scale.setScalar(lerp(bs, mobile ? 0.9 : 1.25, k1));
+
+      const spread = OFF * (0.12 + 0.88 * a) + k2e * 7.5;
       left.position.x = -spread;
       right.position.x = spread;
-      dot.scale.setScalar(Math.max(0.0001, Math.min(1, (a - 0.45) / 0.55)));
-      dot.position.y = reduce ? 0 : Math.sin(t * 1.4) * 0.05;
-      dot.position.z = 0.1 * Math.sin(t * 0.9);
+      left.rotation.y = k2e * 1.2;
+      right.rotation.y = -k2e * 1.2;
+      const dotIn = Math.max(0.0001, Math.min(1, (a - 0.45) / 0.55));
+      dot.scale.setScalar(dotIn * (1 + k2e * k2 * 15));
+      dot.position.y = reduce ? 0 : Math.sin(t * 1.4) * 0.05 * (1 - k2);
+      dot.position.z = 0.1 * Math.sin(t * 0.9) * (1 - k2);
 
-      const idle = reduce ? 0 : Math.sin(t * 0.35) * 0.32;
-      mark.rotation.y = idle + mouse.x * 0.45 + scrollP * 1.4 + (1 - a) * -1.2;
-      mark.rotation.x = mouse.y * 0.18 + (reduce ? 0 : Math.sin(t * 0.5) * 0.04);
-      mark.position.y = reduce ? 0 : Math.sin(t * 0.7) * 0.06 - scrollP * 0.6;
+      const calm = 1 - k1;
+      const idle = reduce ? 0 : Math.sin(t * 0.35) * 0.32 * calm;
+      mark.rotation.y = idle + mouse.x * 0.45 * (1 - k2) + k1 * Math.PI * 2 + (1 - a) * -1.2;
+      mark.rotation.x = mouse.y * 0.18 * (1 - k2) + (reduce ? 0 : Math.sin(t * 0.5) * 0.04 * calm);
+      mark.position.y = reduce ? 0 : Math.sin(t * 0.7) * 0.06 * calm;
       rig.rotation.z = (1 - a) * 0.25;
+      glow.visible = k1 < 0.6;
+      (glow.material as THREE.MeshBasicMaterial).opacity = 1 - k1 / 0.6;
 
       renderer.render(scene, camera);
       if (first) {
@@ -184,9 +208,7 @@ export default function Hero3D() {
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
-      io.disconnect();
       window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("scroll", onScroll);
       window.removeEventListener("mm:intro", onIntro);
       window.removeEventListener("deviceorientation", onTilt);
       barGeo.dispose();
