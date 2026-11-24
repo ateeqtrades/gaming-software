@@ -1,95 +1,92 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <title>Bagh Mining &amp; Minerals · Company Profile</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&display=swap">
 <style>
+/* Editorial layout: one idea per page, full-bleed material, no running headers, footers or page numbers. */
 @page { size: A4; margin: 0; }
-:root { --sea:#06171D; --sea2:#0B242C; --paper:#F5F2EC; --ink:#0D1518; --sand:#E2D3B0; --lagoon:#5FD3C4; --mute:#6C7375; --line:rgba(13,21,24,.13); --linel:rgba(245,242,236,.16); }
+:root { --sea:#06171D; --paper:#F5F2EC; --ink:#0D1518; --sand:#E2D3B0; --lagoon:#5FD3C4; --grey:#5b6365; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: "Outfit", Arial, sans-serif; font-weight: 300; color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-.p { width: 210mm; height: 297mm; position: relative; overflow: hidden; background: var(--paper); padding: 20mm 18mm 18mm; page-break-after: always; display: flex; flex-direction: column; }
-.p.d { background: var(--sea); color: var(--paper); }
-.mono { font-family: "IBM Plex Mono", monospace; font-size: 7.400pt; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); font-weight: 400; }
-.d .mono { color: rgba(245,242,236,.55); }
-.eye { display: flex; align-items: center; gap: 3mm; margin-bottom: 7mm; }
-.eye::before { content: ""; width: 1.600mm; height: 1.600mm; border-radius: 50%; background: currentColor; }
-h1 { font-weight: 300; font-size: 46pt; line-height: 1; letter-spacing: -.035em; }
-h2 { font-weight: 300; font-size: 31pt; line-height: 1.02; letter-spacing: -.035em; margin-bottom: 9mm; }
-h2 span, h1 span { opacity: .5; }
-h3 { font-weight: 400; font-size: 13.500pt; letter-spacing: -.015em; }
-p { font-size: 10.800pt; line-height: 1.55; }
-.lede { font-size: 13pt; line-height: 1.5; max-width: 150mm; }
-.muted { color: #4d5557; } .d .muted { color: rgba(245,242,236,.72); }
+body { font-family: "Outfit", Arial, sans-serif; font-weight: 300; color: var(--ink); }
+.p { width: 210mm; height: 297mm; position: relative; overflow: hidden; background: var(--paper); page-break-after: always; }
+.d { background: var(--sea); color: var(--paper); }
+.pad { position: absolute; inset: 0; padding: 24mm 22mm; display: flex; flex-direction: column; }
+canvas { position: absolute; display: block; }
+h1, h2 { font-weight: 300; letter-spacing: -.04em; line-height: .98; }
+h2 { font-size: 40pt; }
+h2 em, h1 em { font-style: normal; opacity: .45; }
+p { font-size: 11.500pt; line-height: 1.6; }
+.big { font-size: 15pt; line-height: 1.5; letter-spacing: -.005em; }
+.grey { color: var(--grey); } .d .grey { color: rgba(245,242,236,.68); }
+.lab { font-size: 9pt; color: var(--grey); font-weight: 400; } .d .lab { color: rgba(245,242,236,.55); }
 .logo { display: flex; align-items: center; gap: 3.500mm; }
-.logo svg { width: 9mm; height: 9mm; color: var(--sand); }
-.logo b { font-weight: 500; font-size: 13pt; letter-spacing: .26em; display: block; line-height: 1; }
-.logo small { font-family: "IBM Plex Mono", monospace; font-size: 5.600pt; letter-spacing: .16em; text-transform: uppercase; opacity: .6; display: block; margin-top: 1.400mm; }
-.foot { margin-top: auto; padding-top: 5mm; border-top: 1px solid var(--line); display: flex; justify-content: space-between; }
-.d .foot { border-color: var(--linel); }
-.tick { width: 5mm; height: 5mm; border-radius: 50%; background: var(--lagoon); flex: none; position: relative; display: inline-block; }
-.tick::after { content: ""; position: absolute; left: 1.650mm; top: .900mm; width: 1.100mm; height: 2.200mm; border: solid var(--sea); border-width: 0 .500mm .500mm 0; transform: rotate(42deg); }
+.logo svg { width: 10mm; height: 10mm; color: var(--sand); }
+.logo b { font-weight: 500; font-size: 14pt; letter-spacing: .28em; }
 
-/* cover */
-.cover { padding: 0; }
-.cover-img { position: absolute; inset: 0; background: url(img/plant.jpg) center / cover; filter: grayscale(.35) contrast(1.05); }
-.cover::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(6,23,29,.94) 0%, rgba(6,23,29,.7) 38%, rgba(6,23,29,.5) 60%, rgba(6,23,29,.97) 100%); }
-.cover-in { position: relative; z-index: 2; height: 100%; padding: 20mm 18mm 18mm; display: flex; flex-direction: column; }
-.cover h1 { font-size: 58pt; margin-top: auto; }
-.cover .lede { margin-top: 8mm; color: rgba(245,242,236,.8); max-width: 120mm; }
-.seal { position: absolute; z-index: 3; right: 18mm; top: 20mm; width: 34mm; color: var(--sand); }
-.cover-meta { display: flex; justify-content: space-between; margin-top: 16mm; padding-top: 5mm; border-top: 1px solid var(--linel); }
+/* 1 cover */
+.cover canvas { inset: 0; width: 100%; height: 100%; }
+.cover::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6,23,29,.9) 0%, rgba(6,23,29,.35) 45%, rgba(6,23,29,.95) 100%); }
+.cover .pad { z-index: 2; }
+.cover h1 { font-size: 64pt; margin-top: auto; }
+.cover .big { margin-top: 9mm; max-width: 118mm; color: rgba(245,242,236,.82); }
+.seal { position: absolute; z-index: 3; right: 22mm; top: 22mm; width: 30mm; color: var(--sand); }
 
-/* about */
-.two { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; margin-top: 10mm; }
-.card { border: 1px solid var(--line); border-radius: 4mm; padding: 6mm; display: grid; gap: 2.500mm; align-content: start; background: rgba(255,255,255,.55); }
-.d .card { border-color: var(--linel); background: rgba(245,242,236,.05); }
-.card.dark { background: var(--sea); color: var(--paper); border: 0; }
-.card.dark p { color: rgba(245,242,236,.72); }
-.band { margin-top: 8mm; height: 62mm; border-radius: 4mm; background: url(img/pile.jpg) center / cover; }
+/* 2 about */
+.about .photo { position: absolute; left: 0; right: 0; bottom: 0; height: 112mm; background: url(img/plant.jpg) center 40% / cover; }
+.about .photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, var(--paper) 0%, rgba(245,242,236,0) 30%); }
+.about .big { margin-top: 12mm; max-width: 150mm; }
+.mv { display: grid; grid-template-columns: 1fr 1fr; gap: 12mm; margin-top: 14mm; max-width: 160mm; }
+.mv h3 { font-weight: 400; font-size: 12pt; margin-bottom: 2.500mm; }
 
-/* products */
-.prods { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
-.prod { border-radius: 4mm; overflow: hidden; background: #fff; border: 1px solid var(--line); display: grid; grid-template-rows: 44mm auto; }
-.prod .ph { background-size: cover; background-position: center; }
-.prod .ph.rock { background: linear-gradient(135deg, #3a3f42, #1c2124); position: relative; }
-.prod .ph.rock::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 22% 60%, #6e7275 0 15%, transparent 16%), radial-gradient(circle at 52% 42%, #85898c 0 19%, transparent 20%), radial-gradient(circle at 80% 66%, #5d6164 0 17%, transparent 18%), radial-gradient(circle at 38% 88%, #777b7e 0 13%, transparent 14%); }
-.prod .bd { padding: 5.500mm 6mm 6mm; display: grid; gap: 2mm; }
-.prod dl { margin-top: 2mm; border-top: 1px solid var(--line); }
-.prod dl div { display: grid; grid-template-columns: 24mm 1fr; padding: 1.800mm 0; border-bottom: 1px solid var(--line); font-size: 9.400pt; }
-.prod dd { font-weight: 400; }
-.note { font-size: 8.600pt; color: var(--mute); margin-top: 6mm; }
+/* 3 products */
+.products { display: grid; grid-template-rows: auto repeat(4, 1fr); }
+.products .head { padding: 24mm 22mm 12mm; }
+.band { position: relative; overflow: hidden; color: #fff; }
+.band canvas { inset: 0; width: 100%; height: 100%; }
+.band::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(6,23,29,.88) 0%, rgba(6,23,29,.6) 45%, rgba(6,23,29,.1) 100%); }
+.band div { position: absolute; z-index: 2; left: 22mm; top: 50%; transform: translateY(-50%); }
+.band h3 { font-weight: 300; font-size: 27pt; letter-spacing: -.03em; line-height: 1; }
+.band p { font-size: 11pt; color: rgba(255,255,255,.8); margin-top: 3mm; }
+.band p b { font-weight: 500; color: var(--sand); }
 
-/* route */
-.map { width: 152mm; margin: 2mm auto 0; display: block; }
-.stats { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--linel); margin-top: auto; }
-.stats div { padding: 6mm 5mm 0 0; display: grid; gap: 2mm; align-content: start; }
-.stats div + div { padding-left: 5mm; border-left: 1px solid var(--linel); }
-.stats b { font-weight: 200; font-size: 34pt; letter-spacing: -.04em; line-height: 1; color: var(--sand); }
-.stats p { font-size: 9.600pt; color: rgba(245,242,236,.72); }
+/* 4 route */
+.route .map { width: 166mm; display: block; margin: 6mm auto 0; }
+.figs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10mm; margin-top: auto; }
+.figs b { display: block; font-weight: 200; font-size: 30pt; letter-spacing: -.04em; line-height: 1; color: var(--sand); margin-bottom: 3mm; }
+.figs p { font-size: 10.500pt; }
 
-/* process */
-.steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3mm; }
-.step { border: 1px solid var(--line); border-radius: 4mm; padding: 4.500mm; background: rgba(255,255,255,.6); display: grid; gap: 1.500mm; align-content: start; }
-.step i { font-style: normal; font-weight: 200; font-size: 26pt; line-height: 1; color: rgba(13,21,24,.22); margin-bottom: 5mm; }
-.step p { font-size: 8.800pt; color: #4d5557; line-height: 1.4; }
-.assure { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; margin-top: 4mm; }
-.assure .card.dark { grid-template-columns: auto 1fr; column-gap: 4mm; }
-.assure .tick { margin-top: .700mm; }
+/* 5 process */
+.process canvas { left: 0; right: 0; bottom: 0; width: 100%; height: 96mm; }
+.process .fade { position: absolute; left: 0; right: 0; bottom: 60mm; height: 40mm; background: linear-gradient(180deg, var(--paper), rgba(245,242,236,0)); }
+.flow { margin-top: 12mm; }
+.flow div { display: grid; grid-template-columns: 62mm 1fr; align-items: baseline; padding: 4.200mm 0; border-bottom: .250mm solid rgba(13,21,24,.14); }
+.flow div:first-child { border-top: .250mm solid var(--ink); }
+.flow b { font-weight: 300; font-size: 20pt; letter-spacing: -.03em; }
+.with { position: absolute; left: 22mm; right: 22mm; bottom: 20mm; z-index: 2; background: var(--sea); color: var(--paper); border-radius: 5mm; padding: 9mm 10mm 10mm; }
+.with h3 { font-weight: 300; font-size: 19pt; letter-spacing: -.03em; margin-bottom: 6mm; }
+.with ul { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 5mm 10mm; }
+.with li { display: grid; grid-template-columns: 6.500mm 1fr; gap: 3mm; font-size: 10.500pt; line-height: 1.45; color: rgba(245,242,236,.72); }
+.with li b { display: block; font-weight: 400; color: var(--paper); font-size: 12pt; }
+.tick { width: 5.500mm; height: 5.500mm; border-radius: 50%; background: var(--lagoon); position: relative; margin-top: .600mm; display: block; flex: none; }
+.tick::after { content: ""; position: absolute; left: 1.900mm; top: 1.050mm; width: 1.150mm; height: 2.400mm; border: solid var(--sea); border-width: 0 .500mm .500mm 0; transform: rotate(42deg); }
 
-/* company */
-.reg { border-top: 1px solid var(--ink); }
-.reg div { display: grid; grid-template-columns: 48mm 1fr; gap: 4mm; padding: 3.600mm 0; border-bottom: 1px solid var(--line); align-items: baseline; }
-.reg dd { font-weight: 400; font-size: 11.400pt; }
-.docs { display: grid; grid-template-columns: 1fr 1.25fr; gap: 6mm; margin-top: 8mm; align-items: start; }
-.docs figure { border: 1px solid var(--line); border-radius: 3mm; overflow: hidden; background: #fff; }
-.docs img { width: 100%; display: block; }
-.docs figcaption { padding: 2.500mm 3.500mm; border-top: 1px solid var(--line); }
+/* 6 company */
+.facts { margin-top: 12mm; display: grid; grid-template-columns: 1fr 1fr; gap: 7mm 12mm; }
+.facts div { display: grid; gap: 1.200mm; align-content: start; }
+.facts b { font-weight: 400; font-size: 12.500pt; line-height: 1.35; }
+.certs { margin-top: auto; display: grid; grid-template-columns: 1fr 1.300fr; gap: 8mm; align-items: end; }
+.certs img { width: 100%; display: block; border-radius: 2mm; box-shadow: 0 6mm 14mm rgba(13,21,24,.14); }
+.certs p { font-size: 9pt; margin-top: 3mm; }
+.verified { display: flex; align-items: center; gap: 3mm; margin-top: 8mm; font-weight: 400; font-size: 12pt; }
 
-/* contact */
-.contact { margin-top: 10mm; border-top: 1px solid var(--linel); }
-.contact div { display: flex; justify-content: space-between; align-items: baseline; padding: 4.500mm 0; border-bottom: 1px solid var(--linel); }
-.contact b { font-weight: 400; font-size: 14pt; }
-.big { font-weight: 500; font-size: 120pt; letter-spacing: .08em; line-height: .8; color: transparent; -webkit-text-stroke: .300mm rgba(226,211,176,.5); margin-top: auto; }
+/* 7 contact */
+.contact canvas { inset: auto 0 0 0; width: 100%; height: 120mm; }
+.contact::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 120mm; background: linear-gradient(180deg, var(--sea) 0%, rgba(6,23,29,.55) 100%); }
+.contact .pad { z-index: 2; }
+.rows { margin-top: 14mm; display: grid; gap: 6mm; }
+.rows div { display: grid; gap: 1mm; }
+.rows b { font-weight: 300; font-size: 21pt; letter-spacing: -.025em; }
+.contact .logo { margin-top: auto; }
 </style></head><body>
 
 <svg width="0" height="0" style="position:absolute"><defs>
@@ -97,135 +94,122 @@ p { font-size: 10.800pt; line-height: 1.55; }
     <path id="sc" d="M100 100 m-78 0 a78 78 0 1 1 156 0 a78 78 0 1 1 -156 0" fill="none"/>
     <circle cx="100" cy="100" r="97" fill="none" stroke="currentColor" stroke-width="1.500"/>
     <circle cx="100" cy="100" r="62" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2 5"/>
-    <text font-family="IBM Plex Mono, monospace" font-size="12.500" letter-spacing="3.600" fill="currentColor"><textPath href="#sc">VERIFIED COMPANY · REGISTERED IN PAKISTAN · VERIFIED COMPANY · REGISTERED · </textPath></text>
+    <text font-family="Outfit, Arial, sans-serif" font-weight="500" font-size="12" letter-spacing="4.300" fill="currentColor"><textPath href="#sc">VERIFIED COMPANY · REGISTERED IN PAKISTAN · VERIFIED COMPANY · REGISTERED · </textPath></text>
     <circle cx="100" cy="100" r="40" fill="currentColor"/>
     <path d="M82 101l12 12 24-27" fill="none" stroke="#06171D" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
   </symbol>
   <symbol id="mark" viewBox="0 0 40 40"><g fill="currentColor"><rect x="15" y="9" width="10" height="5"/><rect x="11" y="17" width="18" height="5"/><rect x="7" y="25" width="26" height="6"/></g></symbol>
 </defs></svg>
 
-<!-- 1 COVER -->
 <section class="p d cover">
-  <div class="cover-img"></div>
+  <canvas data-tex="rock"></canvas>
   <svg class="seal" viewBox="0 0 200 200"><use href="#seal"/></svg>
-  <div class="cover-in">
-    <div class="logo"><svg><use href="#mark"/></svg><div><b>BAGH</b><small>Mining &amp; Minerals</small></div></div>
-    <h1>Company<br><span>profile.</span></h1>
-    <p class="lede">River sand, crushed aggregate, gravel and armour rock from Pakistan, supplied in bulk and exported by sea from Karachi.</p>
-    <div class="cover-meta"><span class="mono">Bagh Group · Islamabad, Pakistan</span><span class="mono">baghmineral.com</span></div>
+  <div class="pad">
+    <div class="logo"><svg><use href="#mark"/></svg><b>BAGH</b></div>
+    <h1>Bagh Mining<br>&amp; Minerals<br><em>Company profile</em></h1>
+    <p class="big">River sand, crushed aggregate, gravel and armour rock from Pakistan, exported by sea from Karachi.</p>
   </div>
 </section>
 
-<!-- 2 ABOUT -->
-<section class="p">
-  <p class="mono eye">About us</p>
-  <h2>A Pakistani supplier,<br><span>built for export.</span></h2>
-  <p class="lede">Bagh Group works through two companies: Bagh Mining &amp; Minerals (SMC-Private) Limited and Bagh Import &amp; Export (SMC-Private) Limited. We specialise in mineral extraction, processing and bulk supply, and in managing the supply chain from source to the buyer's port.</p>
-  <div class="two">
-    <div class="card"><span class="mono">Mission</span><p>To extract, process and export quality minerals and commercial goods, to international standards and with ethical trading practices.</p></div>
-    <div class="card"><span class="mono">Vision</span><p>To become a trusted mineral exporter from Pakistan and a leading export partner, by building lasting partnerships.</p></div>
-    <div class="card dark"><span class="mono" style="color:rgba(245,242,236,.55)">Mining &amp; minerals</span><h3>Supply</h3><p>Mineral exploration, extraction, processing and bulk supply.</p></div>
-    <div class="card dark"><span class="mono" style="color:rgba(245,242,236,.55)">Import &amp; export</span><h3>Trade</h3><p>International trading, logistics coordination and cross-border supply.</p></div>
+<section class="p about">
+  <div class="pad">
+    <h2>A Pakistani supplier,<br><em>built for export.</em></h2>
+    <p class="big">Bagh Group works through two companies. Bagh Mining &amp; Minerals extracts, processes and supplies minerals in bulk. Bagh Import &amp; Export manages international trade and logistics, from the source to the buyer's port.</p>
+    <div class="mv">
+      <div><h3>Our mission</h3><p class="grey">To extract, process and export quality minerals to international standards, with ethical trading practices.</p></div>
+      <div><h3>Our vision</h3><p class="grey">To be a trusted mineral exporter from Pakistan, built on lasting partnerships.</p></div>
+    </div>
   </div>
-  <div class="band"></div>
-  <div class="foot"><span class="mono">Bagh Mining &amp; Minerals</span><span class="mono">02</span></div>
+  <div class="photo"></div>
 </section>
 
-<!-- 3 PRODUCTS -->
-<section class="p">
-  <p class="mono eye">Products</p>
-  <h2>Four materials.<br><span>One shipment.</span></h2>
-  <div class="prods">
-    <div class="prod"><div class="ph" style="background-image:url(img/sand.jpg)"></div><div class="bd"><h3>Washed river sand</h3><p class="muted" style="font-size:9.600pt">Natural sand for concrete, block making and plaster.</p><dl><div><dt class="mono">Grading</dt><dd>0 to 4.75 mm</dd></div><div><dt class="mono">Use</dt><dd>Concrete, blocks, plaster</dd></div></dl></div></div>
-    <div class="prod"><div class="ph" style="background-image:url(img/aggregate.jpg)"></div><div class="bd"><h3>Crushed aggregate</h3><p class="muted" style="font-size:9.600pt">Hard crushed stone in three sizes.</p><dl><div><dt class="mono">Sizes</dt><dd>5 mm · 10 mm · 20 mm</dd></div><div><dt class="mono">Use</dt><dd>Structural concrete, roads</dd></div></dl></div></div>
-    <div class="prod"><div class="ph" style="background-image:url(img/gravel.jpg)"></div><div class="bd"><h3>Bajri gravel</h3><p class="muted" style="font-size:9.600pt">Natural rounded gravel, also known as khaka.</p><dl><div><dt class="mono">Type</dt><dd>Natural, rounded</dd></div><div><dt class="mono">Use</dt><dd>Building, drainage, landscaping</dd></div></dl></div></div>
-    <div class="prod"><div class="ph rock"></div><div class="bd"><h3>Armour rock</h3><p class="muted" style="font-size:9.600pt">Dense boulders for sea defence works.</p><dl><div><dt class="mono">Block weight</dt><dd>1 to 5 tonnes</dd></div><div><dt class="mono">Use</dt><dd>Harbours, shore protection</dd></div></dl></div></div>
-  </div>
-  <p class="note">Supplied in bulk, on order. Specifications and test results for each material are shared with the quotation.</p>
-  <div class="foot"><span class="mono">Bagh Mining &amp; Minerals</span><span class="mono">03</span></div>
+<section class="p products">
+  <div class="head"><h2>Four materials.<br><em>One shipment.</em></h2></div>
+  <div class="band"><canvas data-tex="sand"></canvas><div><h3>Washed river sand</h3><p><b>0 to 4.75 mm</b> · Concrete, blocks and plaster</p></div></div>
+  <div class="band"><canvas data-tex="aggregate"></canvas><div><h3>Crushed aggregate</h3><p><b>5, 10 and 20 mm</b> · Structural concrete and roads</p></div></div>
+  <div class="band"><canvas data-tex="gravel"></canvas><div><h3>Bajri gravel</h3><p><b>Natural, rounded</b> · Building, drainage and landscaping</p></div></div>
+  <div class="band"><canvas data-tex="rock"></canvas><div><h3>Armour rock</h3><p><b>1 to 5 tonne blocks</b> · Harbours and shore protection</p></div></div>
 </section>
 
-<!-- 4 ROUTE -->
-<section class="p d">
-  <p class="mono eye">Where we deliver</p>
-  <h2>By sea from Karachi.<br><span>The Maldives first.</span></h2>
-  <svg class="map" viewBox="0 0 1000 860">
-    <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E2D3B0"/><stop offset="1" stop-color="#5FD3C4"/></linearGradient></defs>
-    <g id="dots"></g>
-    <path d="M485 147 C 410 400, 640 660, 853 661" fill="none" stroke="rgba(245,242,236,.3)" stroke-width="2" stroke-dasharray="3 9"/>
-    <path d="M485 147 C 400 250, 250 250, 151 136" fill="none" stroke="rgba(245,242,236,.3)" stroke-width="2" stroke-dasharray="3 9"/>
-    <path d="M485 147 C 420 215, 310 225, 240 183" fill="none" stroke="rgba(245,242,236,.3)" stroke-width="2" stroke-dasharray="3 9"/>
-    <path d="M485 147 C 400 360, 520 600, 672 738" fill="none" stroke="url(#rg)" stroke-width="4" stroke-linecap="round"/>
-    <g fill="rgba(245,242,236,.6)"><circle cx="853" cy="661" r="7"/><circle cx="151" cy="136" r="7"/><circle cx="240" cy="183" r="7"/></g>
-    <circle cx="485" cy="147" r="9" fill="#E2D3B0"/><circle cx="672" cy="738" r="11" fill="#5FD3C4"/>
-    <g font-family="IBM Plex Mono, monospace" letter-spacing="3" fill="#F5F2EC"><text x="506" y="134" font-size="24">KARACHI</text><text x="698" y="747" font-size="26">MALÉ</text>
-    <g font-size="19" fill="rgba(245,242,236,.6)"><text x="836" y="640" text-anchor="end">COLOMBO</text><text x="166" y="118">DUBAI</text><text x="256" y="216">MUSCAT</text></g></g>
-  </svg>
-  <div class="stats">
-    <div><b>2,400 km</b><p>Karachi to Malé across open sea, our primary route.</p></div>
-    <div><b>Barge</b><p>Bulk cargo shipped by barge, as part or full loads.</p></div>
-    <div><b>Worldwide</b><p>Other ports, including Colombo, Dubai and Muscat, on request.</p></div>
+<section class="p d route">
+  <div class="pad">
+    <h2>By sea from Karachi.<br><em>The Maldives first.</em></h2>
+    <svg class="map" viewBox="0 0 1000 860">
+      <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E2D3B0"/><stop offset="1" stop-color="#5FD3C4"/></linearGradient></defs>
+      <g id="dots"></g>
+      <g fill="none" stroke="rgba(245,242,236,.3)" stroke-width="2" stroke-dasharray="3 9"><path d="M485 147 C 410 400, 640 660, 853 661"/><path d="M485 147 C 400 250, 250 250, 151 136"/><path d="M485 147 C 420 215, 310 225, 240 183"/></g>
+      <path d="M485 147 C 400 360, 520 600, 672 738" fill="none" stroke="url(#rg)" stroke-width="4" stroke-linecap="round"/>
+      <g fill="rgba(245,242,236,.6)"><circle cx="853" cy="661" r="7"/><circle cx="151" cy="136" r="7"/><circle cx="240" cy="183" r="7"/></g>
+      <circle cx="485" cy="147" r="9" fill="#E2D3B0"/><circle cx="672" cy="738" r="11" fill="#5FD3C4"/>
+      <g font-family="Outfit, Arial, sans-serif" fill="#F5F2EC"><text x="506" y="136" font-size="27" font-weight="400">Karachi</text><text x="698" y="748" font-size="30" font-weight="400">Malé</text>
+      <g font-size="21" fill="rgba(245,242,236,.62)"><text x="836" y="640" text-anchor="end">Colombo</text><text x="166" y="118">Dubai</text><text x="256" y="218">Muscat</text></g></g>
+    </svg>
+    <div class="figs">
+      <div><b>2,400 km</b><p class="grey">Karachi to Malé across open sea, our primary route.</p></div>
+      <div><b>By barge</b><p class="grey">Bulk cargo, shipped as part or full loads.</p></div>
+      <div><b>Worldwide</b><p class="grey">Colombo, Dubai, Muscat and other ports on request.</p></div>
+    </div>
   </div>
-  <div class="foot" style="margin-top:8mm"><span class="mono">Bagh Mining &amp; Minerals</span><span class="mono">04</span></div>
 </section>
 
-<!-- 5 PROCESS -->
-<section class="p">
-  <p class="mono eye">How we work</p>
-  <h2>From enquiry<br><span>to your jetty.</span></h2>
-  <div class="steps">
-    <div class="step"><i>1</i><h3>Enquiry</h3><p>Product, tonnage, port and date.</p></div>
-    <div class="step"><i>2</i><h3>Samples</h3><p>Couriered to you with test results.</p></div>
-    <div class="step"><i>3</i><h3>Quotation</h3><p>FOB Karachi, with a validity date.</p></div>
-    <div class="step"><i>4</i><h3>Loading</h3><p>Inspected at Karachi before sailing.</p></div>
-    <div class="step"><i>5</i><h3>Delivery</h3><p>By sea to your port or island.</p></div>
+<section class="p process">
+  <canvas data-tex="sand"></canvas><div class="fade"></div>
+  <div class="pad">
+    <h2>From enquiry<br><em>to your jetty.</em></h2>
+    <div class="flow">
+      <div><b>Enquiry</b><p class="grey">Tell us the product, tonnage, port and date.</p></div>
+      <div><b>Samples</b><p class="grey">We courier samples to you with test results.</p></div>
+      <div><b>Quotation</b><p class="grey">An FOB Karachi price with a validity date.</p></div>
+      <div><b>Loading</b><p class="grey">Inspected at Karachi before the vessel sails.</p></div>
+      <div><b>Delivery</b><p class="grey">By sea to your port or island.</p></div>
+    </div>
   </div>
-  <h3 style="margin-top:14mm;font-size:19pt;font-weight:300;letter-spacing:-.03em">With every order</h3>
-  <div class="assure">
-    <div class="card dark"><i class="tick"></i><div><h3>Test report</h3><p>Grading and quality results for the material you are buying.</p></div></div>
-    <div class="card dark"><i class="tick"></i><div><h3>Independent inspection</h3><p>A third party surveyor at loading, with sealed samples for both sides.</p></div></div>
-    <div class="card dark"><i class="tick"></i><div><h3>Import approval documents</h3><p>The technical file your import quality approval needs.</p></div></div>
-    <div class="card dark"><i class="tick"></i><div><h3>Secure payment</h3><p>Letter of credit at sight, or advance with balance against documents.</p></div></div>
+  <div class="with">
+    <h3>With every order</h3>
+    <ul>
+      <li><i class="tick"></i><span><b>Test report</b>Grading and quality results for the material you are buying.</span></li>
+      <li><i class="tick"></i><span><b>Independent inspection</b>A third party surveyor at loading, with sealed samples.</span></li>
+      <li><i class="tick"></i><span><b>Import approval documents</b>The technical file your import quality approval needs.</span></li>
+      <li><i class="tick"></i><span><b>Secure payment</b>Letter of credit at sight, or advance with balance against documents.</span></li>
+    </ul>
   </div>
-  <div class="band" style="background-image:url(img/hands.jpg);height:58mm;margin-top:10mm"></div>
-  <div class="foot"><span class="mono">Bagh Mining &amp; Minerals</span><span class="mono">05</span></div>
 </section>
 
-<!-- 6 COMPANY -->
-<section class="p">
-  <p class="mono eye">Company information</p>
-  <h2>Registered.<br><span>Verifiable.</span></h2>
-  <dl class="reg">
-    <div><dt class="mono">Companies</dt><dd>Bagh Mining &amp; Minerals (SMC-Private) Limited<br>Bagh Import &amp; Export (SMC-Private) Limited</dd></div>
-    <div><dt class="mono">Chief Executive Officer</dt><dd>Muhiuddin</dd></div>
-    <div><dt class="mono">Incorporation</dt><dd>Securities and Exchange Commission of Pakistan · CUIN 0289310 · 24 March 2025</dd></div>
-    <div><dt class="mono">Tax registration</dt><dd>Federal Board of Revenue · NTN G388988-8 · Active</dd></div>
-    <div><dt class="mono">Official address</dt><dd>Office No. 2, Sangam Market, I-8/3, Islamabad, Pakistan</dd></div>
-    <div><dt class="mono">Bankers</dt><dd>Allied Bank Limited, I-8/3, Islamabad</dd></div>
-  </dl>
-  <div class="docs">
-    <figure><img src="img/secp.jpg" alt="SECP certificate of incorporation"><figcaption class="mono">Certificate of incorporation · verify at leap.secp.gov.pk</figcaption></figure>
-    <figure><img src="img/fbr.jpg" alt="FBR registration record"><figcaption class="mono">FBR registration record</figcaption></figure>
+<section class="p company">
+  <div class="pad">
+    <h2>Registered.<br><em>Verifiable.</em></h2>
+    <div class="verified"><i class="tick"></i>Verified registered company. Check us at leap.secp.gov.pk</div>
+    <div class="facts">
+      <div><span class="lab">Companies</span><b>Bagh Mining &amp; Minerals (SMC-Private) Limited<br>Bagh Import &amp; Export (SMC-Private) Limited</b></div>
+      <div><span class="lab">Chief Executive Officer</span><b>Muhiuddin</b></div>
+      <div><span class="lab">Incorporated with</span><b>Securities and Exchange Commission of Pakistan<br>No. 0289310, 24 March 2025</b></div>
+      <div><span class="lab">Tax registration</span><b>Federal Board of Revenue<br>NTN G388988-8, active</b></div>
+      <div><span class="lab">Official address</span><b>Office No. 2, Sangam Market, I-8/3, Islamabad, Pakistan</b></div>
+      <div><span class="lab">Bankers</span><b>Allied Bank Limited, I-8/3, Islamabad</b></div>
+    </div>
+    <div class="certs">
+      <div><img src="img/secp.jpg" alt="Certificate of incorporation"><p class="grey">Certificate of incorporation</p></div>
+      <div><img src="img/fbr.jpg" alt="Tax registration record"><p class="grey">Tax registration record</p></div>
+    </div>
   </div>
-  <div class="foot"><span class="mono">Bagh Mining &amp; Minerals</span><span class="mono">06</span></div>
 </section>
 
-<!-- 7 CONTACT -->
-<section class="p d">
-  <p class="mono eye">Contact</p>
-  <h2>Tell us what<br><span>you need.</span></h2>
-  <p class="lede muted">We reply within one working day with an FOB Karachi price and the next loading window.</p>
-  <div class="contact">
-    <div><span class="mono">Sales · WhatsApp</span><b>+92 308 2612601</b></div>
-    <div><span class="mono">Sales · WhatsApp</span><b>+92 324 3461299</b></div>
-    <div><span class="mono">Email</span><b>contact@baghmineral.com</b></div>
-    <div><span class="mono">Website</span><b>baghmineral.com</b></div>
-    <div><span class="mono">Head office</span><b>+92 332 2332870</b></div>
-    <div><span class="mono">Address</span><b style="font-size:11.500pt">Office No. 2, Sangam Market, I-8/3, Islamabad, Pakistan</b></div>
+<section class="p d contact">
+  <canvas data-tex="gravel"></canvas>
+  <div class="pad">
+    <h2>Tell us what<br><em>you need.</em></h2>
+    <p class="big grey" style="margin-top:8mm;max-width:130mm">We reply within one working day with a price and the next loading window.</p>
+    <div class="rows">
+      <div><span class="lab">Sales, WhatsApp</span><b>+92 308 2612601 &nbsp;·&nbsp; +92 324 3461299</b></div>
+      <div><span class="lab">Email</span><b>contact@baghmineral.com</b></div>
+      <div><span class="lab">Website</span><b>baghmineral.com</b></div>
+      <div><span class="lab">Head office</span><b style="font-size:15pt">Office No. 2, Sangam Market, I-8/3, Islamabad &nbsp;·&nbsp; +92 332 2332870</b></div>
+    </div>
+    <div class="logo"><svg><use href="#mark"/></svg><b>BAGH</b></div>
   </div>
-  <div class="big">BAGH</div>
 </section>
 
+<script src="textures.js"></script>
 <script>
 (function () {
   var LAND = [
