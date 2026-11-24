@@ -15,7 +15,7 @@
 
   function sizeCanvas(c) {
     var r = c.getBoundingClientRect();
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var dpr = c.classList.contains("bg-tex") ? 1 : Math.min(window.devicePixelRatio || 1, 2);
     c.width = Math.max(1, Math.round(r.width * dpr));
     c.height = Math.max(1, Math.round(r.height * dpr));
     return { ctx: c.getContext("2d"), w: c.width, h: c.height, dpr: dpr };
@@ -134,6 +134,10 @@
   function paintAll() {
     var hero = document.querySelector(".hero-tex");
     if (hero) painters.hero(hero);
+    document.querySelectorAll(".bg-tex").forEach(function (c) {
+      var f = painters[c.getAttribute("data-tex")];
+      if (f) f(c);
+    });
     document.querySelectorAll(".prow").forEach(function (p) {
       var c = p.querySelector(".p-tex");
       var f = painters[p.getAttribute("data-tex")];
@@ -170,7 +174,15 @@
         c.setAttribute("cx", (((lon - 50) / 35) * 1000).toFixed(1));
         c.setAttribute("cy", (((30 - lat) / 30) * 860).toFixed(1));
         c.setAttribute("r", land || atoll ? "4.2" : "1.8");
-        if (land || atoll) c.setAttribute("class", "land");
+        if (land || atoll) {
+          var cc = "";
+          if (atoll) cc = " c-mv";
+          else if (inPoly([lon, lat], LAND[2])) cc = " c-lk";
+          else if (inPoly([lon, lat], LAND[1]) && lon > 51.4 && lon < 56.3 && lat > 22.6) cc = " c-ae";
+          else if (inPoly([lon, lat], LAND[1]) && lon >= 55.4 && lat > 16.5) cc = " c-om";
+          else if (lon > 61.4 && lon < 71.2 && lat > 23.8) cc = " c-pk";
+          c.setAttribute("class", "land" + cc);
+        }
         frag.appendChild(c);
       }
     }
@@ -178,7 +190,7 @@
   }
 
   /* ---------- form: builds a WhatsApp message ---------- */
-  var WA = "923113815256";
+  var WA = "923082612601";
   function form() {
     var chips = document.querySelectorAll(".chip");
     chips.forEach(function (b) {
@@ -225,12 +237,53 @@
       last = y;
     }, { passive: true });
 
-    var route = document.querySelector(".r-main");
-    var glow = document.querySelector(".r-glow");
+    var NS = "http://www.w3.org/2000/svg";
+    var DEST = [
+      { id: "mv", name: "Malé, Maldives", tag: "Primary route", km: "2,400", x: 672, y: 738, lx: 22, ly: 7, d: "M485 147 C 400 360, 520 600, 672 738" },
+      { id: "lk", name: "Colombo, Sri Lanka", tag: "On request", km: "2,420", x: 853, y: 661, lx: -16, ly: -18, d: "M485 147 C 410 400, 640 660, 853 661" },
+      { id: "ae", name: "Dubai, UAE", tag: "On request", km: "1,180", x: 151, y: 136, lx: 14, ly: -18, d: "M485 147 C 400 250, 250 250, 151 136" },
+      { id: "om", name: "Muscat, Oman", tag: "On request", km: "880", x: 240, y: 183, lx: 16, ly: 32, d: "M485 147 C 420 215, 310 225, 240 183" },
+    ];
+    var gR = document.querySelector(".routes"), gD = document.querySelector(".dests");
     var barge = document.querySelector(".barge");
-    var len = route.getTotalLength();
-    var place = function (p) { var pt = route.getPointAtLength(p * len); barge.setAttribute("cx", pt.x); barge.setAttribute("cy", pt.y); };
-    if (!hasGsap || reduce) { place(1); return; }
+    var mapEl = document.querySelector(".hero-map");
+    DEST.forEach(function (o) {
+      var p = document.createElementNS(NS, "path");
+      p.setAttribute("d", o.d); p.setAttribute("class", "rt rt-" + o.id);
+      gR.appendChild(p); o.path = p; o.len = p.getTotalLength();
+      var g = document.createElementNS(NS, "g");
+      g.setAttribute("class", "dest d-" + o.id); g.setAttribute("transform", "translate(" + o.x + " " + o.y + ")");
+      g.setAttribute("tabindex", "0"); g.setAttribute("role", "button"); g.setAttribute("aria-label", "Show route to " + o.name);
+      g.innerHTML = '<circle class="hit" r="34"/><circle class="ring" r="7"/><circle class="core" r="7"/><text class="lbl" x="' + o.lx + '" y="' + o.ly + '"' + (o.lx < 0 ? ' text-anchor="end"' : "") + ">" + o.name.split(",")[0].toUpperCase() + "</text>";
+      gD.appendChild(g); o.g = g;
+    });
+    var active = DEST[0], prog = { p: 0 }, tween = null;
+    var place = function (p) { var pt = active.path.getPointAtLength(p * active.len); barge.setAttribute("cx", pt.x); barge.setAttribute("cy", pt.y); };
+    var card = { tag: document.querySelector(".mc-tag"), name: document.querySelector(".mc-name"), km: document.querySelector(".mc-km") };
+    var run = function () {
+      if (tween) tween.kill();
+      if (reduce || !hasGsap) { place(1); return; }
+      tween = gsap.fromTo(prog, { p: 0 }, { p: 1, duration: 2.6 + active.len / 260, ease: "power1.inOut", repeat: -1, repeatDelay: 0.9, onUpdate: function () { place(prog.p); } });
+    };
+    var select = function (o, animate) {
+      active = o;
+      DEST.forEach(function (x) { x.g.classList.toggle("on", x === o); x.path.classList.toggle("on", x === o); });
+      mapEl.setAttribute("data-on", o.id);
+      card.tag.textContent = o.tag; card.name.textContent = o.name; card.km.textContent = o.km + " km from Karachi";
+      if (animate && hasGsap && !reduce) gsap.fromTo(o.path, { strokeDashoffset: o.len }, { strokeDashoffset: 0, duration: 1.1, ease: "power2.out" });
+      run();
+    };
+    var back;
+    DEST.forEach(function (o) {
+      o.path.style.strokeDasharray = o.len;
+      var go = function () { clearTimeout(back); if (active !== o) select(o, true); };
+      o.g.addEventListener("pointerenter", go); o.g.addEventListener("click", go); o.g.addEventListener("focus", go);
+      o.g.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+      o.g.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") back = setTimeout(function () { select(DEST[0], true); }, 2600); });
+    });
+    select(DEST[0], false);
+    var route = DEST[0].path, len = DEST[0].len;
+    if (!hasGsap || reduce) return;
 
     gsap.registerPlugin(ScrollTrigger);
     var lenis = null;
@@ -251,14 +304,11 @@
     }
 
     // Intro: loader, then the route draws and the headline rises.
-    [route, glow].forEach(function (r) { r.style.strokeDasharray = len; r.style.strokeDashoffset = len; });
+    route.style.strokeDashoffset = len; if (tween) tween.pause();
     gsap.set(".map-dots", { opacity: 0 });
-    gsap.set(".pin, .lbl", { opacity: 0 });
+    gsap.set(".pin, .lbl, .dest", { opacity: 0 });
     gsap.set(barge, { opacity: 0 });
-    var prog = { p: 0 };
-    var loop = function () {
-      gsap.fromTo(prog, { p: 0 }, { p: 1, duration: 7, ease: "power1.inOut", repeat: -1, repeatDelay: 1.2, onUpdate: function () { place(prog.p); } });
-    };
+    var loop = function () { run(); };
     gsap.timeline({ defaults: { ease: "expo.out" } })
       .from(".ld-mark rect", { y: 14, opacity: 0, duration: 0.7, stagger: 0.12 })
       .to(".ld-line i", { scaleX: 1, duration: 1, ease: "power2.inOut" }, 0.2)
@@ -267,13 +317,13 @@
       .to(".map-dots", { opacity: 1, duration: 1.6 }, 1.6)
       .to(".hero .ln > span", { y: 0, duration: 1.3, stagger: 0.1 }, 1.75)
       .to(".hero .hf", { opacity: 1, duration: 1.2, stagger: 0.08 }, 2.1)
-      .to(".pin, .lbl", { opacity: 1, duration: 0.8, stagger: 0.1 }, 2.2)
-      .to([route, glow], { strokeDashoffset: 0, duration: 2.4, ease: "power2.inOut" }, 2.3)
+      .to(".pin, .lbl, .dest", { opacity: 1, duration: 0.8, stagger: 0.08 }, 2.2)
+      .to(route, { strokeDashoffset: 0, duration: 2.4, ease: "power2.inOut" }, 2.3)
       .add(function () { if (lenis) lenis.start(); }, 2.4)
       .to(barge, { opacity: 1, duration: 0.4 }, 4.6)
       .add(loop, 4.6);
 
-    if (window.innerWidth > 760) gsap.to(".hero-map", { yPercent: -62, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: true } });
+    if (window.innerWidth > 760) gsap.to(".hero-map", { yPercent: -12, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: true } });
     gsap.to(".hero-in", { yPercent: -8, opacity: 0.25, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: true } });
 
     document.querySelectorAll("section:not(.hero) h2").forEach(function (h) {
@@ -282,6 +332,10 @@
     ScrollTrigger.batch(".rv", {
       start: "top 90%",
       onEnter: function (els) { gsap.to(els, { opacity: 1, y: 0, duration: 1.1, stagger: 0.08, ease: "expo.out", overwrite: true }); },
+    });
+    gsap.fromTo(".bar-a", { scaleX: 0 }, { scaleX: 1, duration: 1.8, ease: "expo.out", scrollTrigger: { trigger: ".bar", start: "top 88%" } });
+    document.querySelectorAll(".bg-tex:not(.hero-stones)").forEach(function (c) {
+      gsap.fromTo(c, { yPercent: -6 }, { yPercent: 6, ease: "none", scrollTrigger: { trigger: c.parentNode, start: "top bottom", end: "bottom top", scrub: true } });
     });
     gsap.to(".steps-line i", { scaleX: 1, ease: "none", scrollTrigger: { trigger: ".steps", start: "top 80%", end: "top 35%", scrub: true } });
     document.querySelectorAll(".yard img").forEach(function (img) {
