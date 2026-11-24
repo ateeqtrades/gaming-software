@@ -496,3 +496,19 @@ main > section, .foot { position: relative; z-index: 1; }
 .sound.on .sound-bars i:nth-child(2) { animation-delay: .2s; } .sound.on .sound-bars i:nth-child(3) { animation-delay: .45s; } .sound.on .sound-bars i:nth-child(4) { animation-delay: .1s; }
 @keyframes eq { 0%, 100% { height: 3px; } 50% { height: 12px; } }
 @media (max-width: 960px) { .sound .mono { display: none; } .sound { padding: 12px; } }
+
+/* coming soon */
+.soon { background: var(--bone); color: var(--ink); padding-block: clamp(110px, 15vw, 230px); }
+.soon h2 { font-size: clamp(40px, 8.400vw, 150px); line-height: .92; max-width: 11ch; }
+
+/* founders: equal cards on phones */
+@media (max-width: 960px) {
+  .men { display: grid !important; grid-template-columns: 1fr 1fr; gap: 12px; overflow: visible; margin-inline: 0; padding-inline: 0; }
+  .man { flex: none; gap: 12px; }
+  .man-meta { display: grid; gap: 6px; align-content: start; }
+  .man-meta h3 { font-size: clamp(15px, 4.200vw, 22px); line-height: 1.1; min-height: 2.200em; }
+  .man-meta .mono { font-size: 9.500px; }
+  .man-init { font-size: clamp(44px, 13vw, 90px); }
+  .man-mark { left: 12px; bottom: 12px; width: 20px; }
+}
+@media (max-width: 420px) { .dock { left: calc(50% + 24px); padding: 12px 16px 12px 12px; font-size: 14px; } }

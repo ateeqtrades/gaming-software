@@ -9,12 +9,50 @@ import { useEffect, useRef, useState } from "react";
 const SRC = "/audio/theme.mp3";
 const VOLUME = 0.45;
 
+/** A short vinyl-style crackle, made in the browser, played just before the music comes in. */
+function crackle(seconds = 2.2) {
+  try {
+    const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    const ctx = new Ctx();
+    const n = Math.floor(ctx.sampleRate * seconds);
+    const buf = ctx.createBuffer(1, n, ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < n; i++) {
+      d[i] = (Math.random() * 2 - 1) * 0.012; // surface hiss
+      if (Math.random() < 0.0009) {
+        // a pop: a sharp click that dies away in a few milliseconds
+        const amp = 0.25 + Math.random() * 0.6;
+        const len = 20 + Math.floor(Math.random() * 90);
+        for (let k = 0; k < len && i + k < n; k++) d[i + k] += (Math.random() * 2 - 1) * amp * Math.exp(-k / (len / 4));
+      }
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    const hp = ctx.createBiquadFilter();
+    hp.type = "highpass";
+    hp.frequency.value = 900;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.5, ctx.currentTime + 0.08);
+    g.gain.setValueAtTime(0.5, ctx.currentTime + seconds - 0.7);
+    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + seconds);
+    src.connect(hp);
+    hp.connect(g);
+    g.connect(ctx.destination);
+    src.start();
+    src.onended = () => ctx.close();
+  } catch {
+    /* no Web Audio: skip the crackle */
+  }
+}
+
 export default function Sound() {
   const [on, setOn] = useState(true); // what the visitor wants
   const [playing, setPlaying] = useState(false); // what is actually happening
   const audio = useRef<HTMLAudioElement | null>(null);
   const wanted = useRef(true);
   const fade = useRef(0);
+  const crackled = useRef(false);
 
   const fadeTo = (target: number, then?: () => void) => {
     const a = audio.current;
@@ -37,7 +75,11 @@ export default function Sound() {
       a.volume = 0;
       await a.play();
       setPlaying(true);
-      fadeTo(VOLUME);
+      if (!crackled.current) {
+        crackled.current = true;
+        crackle();
+        window.setTimeout(() => wanted.current && fadeTo(VOLUME), 1100); // music comes in under the crackle
+      } else fadeTo(VOLUME);
       return true;
     } catch {
       return false; // blocked until the visitor interacts

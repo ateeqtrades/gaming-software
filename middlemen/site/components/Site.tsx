@@ -473,7 +473,6 @@ export default function Site() {
               <li><a href="#what">What we do</a></li>
               <li><a href="#how">How it works</a></li>
               <li><a href="#men">The Men</a></li>
-              <li><a href="#drop">Drop 01</a></li>
             </ul>
           </nav>
           <a href="#intro" className="btn btn-sm magnet nav-cta">Request an introduction</a>
@@ -497,7 +496,6 @@ export default function Site() {
               ["#what", "What we do"],
               ["#how", "How it works"],
               ["#men", "The Men"],
-              ["#drop", "Drop 01"],
               ["#intro", "Request an introduction"],
             ].map(([h, l], i) => (
               <li key={h} style={{ transitionDelay: menu ? `${0.08 + i * 0.05}s` : "0s" }}>
@@ -673,48 +671,10 @@ export default function Site() {
           </div>
         </section>
 
-        {/* Drop */}
-        <section className="drop" id="drop">
-          <div className="wrap drop-in">
-            <div className="drop-copy">
-              <span className="kicker mono">Drop 01</span>
-              <h2 className="reveal">Members first.</h2>
-              <p className="lede fade">
-                Heavyweight hoodie, tee and cap. Tonal embroidery on the front, the line on the back. A small numbered run, and
-                the list hears first.
-              </p>
-              {sent === "drop" ? (
-                <p className="ok mono" role="status">WhatsApp opened. Press send there to join.</p>
-              ) : (
-                <form
-                  className="drop-form fade"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const name = (document.getElementById("drop-name") as HTMLInputElement).value.trim();
-                    openWhatsApp(`Hello Middlemen, add me to the Drop 01 list.${name ? "\nName: " + name : ""}`);
-                    setSent("drop");
-                  }}
-                >
-                  <label htmlFor="drop-name" className="sr-only">Your name</label>
-                  <input id="drop-name" required placeholder="Your name" autoComplete="name" />
-                  <button className="btn magnet" type="submit">Join on WhatsApp</button>
-                </form>
-              )}
-            </div>
-            <div className="drop-art fade" aria-hidden="true">
-              <svg viewBox="0 0 300 320" className="hoodie">
-                <path d="M98 58Q150 40 202 58L262 92L292 232L256 242L240 156V302H60V156L44 242L8 232L38 92Z" className="h-body" />
-                <path d="M108 60Q150 6 192 60Q150 86 108 60Z" className="h-hood" />
-                <path d="M138 72V118M162 72V118" className="h-str" />
-                <rect x="96" y="214" width="108" height="56" rx="6" className="h-pkt" />
-                <g transform="translate(139 128) scale(.18)" className="h-mark">
-                  <rect x="20" y="22" width="16" height="76" />
-                  <rect x="84" y="22" width="16" height="76" />
-                  <circle cx="60" cy="60" r="10" />
-                </g>
-              </svg>
-              <span className="mono drop-no">No. 001 / 150</span>
-            </div>
+        {/* Coming soon */}
+        <section className="soon" aria-label="Coming soon">
+          <div className="wrap">
+            <h2 className="reveal">Exciting things coming soon.</h2>
           </div>
         </section>
 
