@@ -1,4 +1,4 @@
-@page { size: A4; margin: 13mm 16mm; }
+@page { size: A4; margin: 12mm 16mm; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: "Inter", Arial, sans-serif; font-size: 9.2pt; line-height: 1.42; color: #111214; }
 a { color: inherit; text-decoration: none; }
@@ -6,9 +6,9 @@ h1 { font-size: 25pt; font-weight: 700; letter-spacing: -.025em; line-height: 1;
 .role { font-size: 11pt; color: #44474d; margin-top: 2.2mm; }
 .head { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 5mm; border-bottom: .35mm solid #111214; }
 .contact { text-align: right; font-size: 8.4pt; line-height: 1.6; color: #33363b; }
-h2 { font-size: 7.6pt; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: #6a6d73; margin: 4.2mm 0 1.8mm; }
-.sum { font-size: 10pt; line-height: 1.5; }
-.job { padding: 1.8mm 0; border-top: .2mm solid #d9dadd; break-inside: avoid; }
+h2 { font-size: 7.6pt; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: #6a6d73; margin: 3.4mm 0 1.5mm; }
+.sum { font-size: 9.6pt; line-height: 1.45; }
+.job { padding: 1.4mm 0; border-top: .2mm solid #d9dadd; break-inside: avoid; }
 .job .t { display: flex; justify-content: space-between; align-items: baseline; }
 .job b { font-weight: 600; font-size: 10.2pt; }
 .job .org { color: #44474d; }
@@ -17,7 +17,7 @@ ul { list-style: none; margin-top: 1mm; }
 li { position: relative; padding-left: 3.6mm; margin-top: .7mm; color: #26282c; }
 li::before { content: ""; position: absolute; left: 0; top: .62em; width: 1.3mm; height: .25mm; background: #6a6d73; }
 .cols { display: grid; grid-template-columns: 1.25fr 1fr; gap: 9mm; }
-.kv p { padding: 1.3mm 0; border-top: .2mm solid #d9dadd; }
+.kv p { padding: 1mm 0; border-top: .2mm solid #d9dadd; }
 .kv b { font-weight: 600; }
 /* letter */
 .letter { font-size: 10pt; line-height: 1.52; }
