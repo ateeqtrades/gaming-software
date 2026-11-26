@@ -7,9 +7,15 @@
 
   /* ---------- content ---------- */
   var WORK = [
-    { t: "DXL", k: "Brand experience", y: "2022 to now", role: "Head of Brand Experience", svc: "Brand experience, partnerships, positioning",
-      d: "Pakistan's first structured digital-asset education academy, building toward a PVARA-aligned exchange. I shape how the brand shows up for learners and for institutions: PVARA, Sindh Police, Saylani Welfare, BankIslami, Dewan University and HEC.",
-      typo: ["DXL", "Digital-asset education · Karachi"] },
+    { t: "DXL", k: "Brand experience", y: "2026", role: "Head of Brand Experience", svc: "Brand experience, partnerships, launch content",
+      d: "A digital-asset education academy in Karachi, building toward a PVARA-aligned exchange. I joined in 2026 to shape how the brand shows up, for learners and for institutions such as PVARA, Sindh Police, Saylani Welfare, BankIslami, Dewan University and HEC.",
+      img: ["dxl-grid"], one: true },
+    { t: "Middlemen", k: "Brand identity and websites", y: "2026", role: "Co-Founder", svc: "Brand identity, website, client sites",
+      d: "A business-introductions service I co-founded. I directed the identity and the website, and the same for our first client, Bagh Mining & Minerals.",
+      img: ["middlemen-0", "bagh-0"], wide: true },
+    { t: "Gaming Zone Manager", k: "Software, built with AI", y: "2026", role: "Product and build", svc: "Web app: server, staff dashboard, PC agent",
+      d: "Software for running a gaming zone: a live floor map of every PC and console, prepaid and pay-per-minute sessions, member balances, remote lock and unlock of each PC, and revenue reports. I built it with AI tools.",
+      img: ["gamezone-0"], wide: true, one: true },
     { t: "Cosmic Computers", k: "Social and Meta ads", y: "2025", role: "Marketing Head", svc: "Content strategy, shoots, editing, design, Meta ads",
       d: "End-to-end social for a PC-hardware brand. I shot, edited and designed the content, and ran the Meta campaigns that turned it into leads and sales for a Pakistani audience.",
       img: ["cosmic-1", "cosmic-2", "cosmic-3"] },
@@ -25,6 +31,23 @@
     { t: "Glod Water", k: "Luxury packaging and identity", y: "2022", role: "Creative director", svc: "Brand design, product rendering", concept: true,
       d: "A self-initiated luxury water brand. Not client work. Logo, packaging and renders for a product that sells indulgence as much as hydration.",
       img: ["glod-3", "glod-1", "glod-0"] },
+  ];
+
+  /* The evidence reel: v = video, a = aspect ratio */
+  var REEL = [
+    { v: "ai-1", a: "9/16", c: "AI Content Production", s: "UGC-style video, made with AI tools" },
+    { i: "cosmic-1", a: "4/5", c: "Cosmic Computers", s: "Social content, 2025" },
+    { v: "cosmic-reel", a: "9/16", c: "Cosmic Computers", s: "Reel, shot and edited" },
+    { i: "dxl-grid", a: "4/5", c: "DXL", s: "Instagram launch grid, 2026" },
+    { i: "middlemen-0", a: "16/10", c: "Middlemen", s: "Brand and website, 2026" },
+    { i: "gamezone-0", a: "16/10", c: "Gaming Zone Manager", s: "Web app, built with AI, 2026" },
+    { v: "ai-2", a: "9/16", c: "AI Content Production", s: "Product ad, made with AI tools" },
+    { i: "cosmic-2", a: "5/4", c: "Cosmic Computers", s: "Campaign creative" },
+    { i: "moorish-0", a: "16/10", c: "Moorish Construction", s: "Brand identity, 2025" },
+    { i: "ai-2", a: "4/5", c: "AI Content Production", s: "AI product visuals" },
+    { i: "bagh-0", a: "16/10", c: "Bagh Mining & Minerals", s: "Website, via Middlemen, 2026" },
+    { i: "h23-0", a: "1/1", c: "H23", s: "Concept identity, 2023", k: true },
+    { i: "glod-3", a: "2/3", c: "Glod Water", s: "Concept packaging, 2022", k: true },
   ];
 
   var CHAT = [
@@ -44,7 +67,7 @@
     var el = document.createElement("article");
     el.className = "item rv";
     var gal = w.img
-      ? '<div class="gal' + (w.wide ? " wide" : "") + '">' + w.img.slice(0, w.wide ? 2 : 3).map(function (n) { return '<img src="img/' + n + '.jpg" alt="' + w.t + ' work sample" loading="lazy">'; }).join("") + "</div>"
+      ? '<div class="gal' + (w.wide ? " wide" : "") + (w.one ? " one" : "") + '">' + w.img.slice(0, w.one ? 1 : w.wide ? 2 : 3).map(function (n) { return '<img src="img/' + n + '.jpg" alt="' + w.t + ' work sample" loading="lazy">'; }).join("") + "</div>"
       : '<div class="typo"><b>' + w.typo[0] + "</b><span>" + w.typo[1] + "</span></div>";
     el.innerHTML =
       '<button class="item-h" type="button" aria-expanded="false"' + (w.img ? ' data-peek="img/' + w.img[0] + '.jpg"' : "") + ">" +
@@ -62,6 +85,30 @@
     });
   });
 
+  /* ---------- evidence reel ---------- */
+  (function () {
+    var reel = document.getElementById("reel");
+    REEL.forEach(function (r) {
+      var f = document.createElement("figure");
+      f.className = "clip";
+      f.style.setProperty("--a", r.a);
+      var media = r.v
+        ? '<video muted loop playsinline preload="none" poster="media/' + r.v + '.jpg"><source src="media/' + r.v + '.mp4" type="video/mp4"></video><span class="m play">Video</span>'
+        : '<img src="img/' + r.i + '.jpg" alt="' + r.c + ": " + r.s + '" loading="lazy" draggable="false">';
+      f.innerHTML = '<div class="clip-m">' + media + "</div><figcaption><b>" + r.c + (r.k ? '<span class="concept">CONCEPT</span>' : "") + '</b><span class="m">' + r.s + "</span></figcaption>";
+      reel.appendChild(f);
+    });
+    var io = new IntersectionObserver(function (en) {
+      en.forEach(function (e) { if (e.isIntersecting && !reduce) e.target.play().catch(function () {}); else e.target.pause(); });
+    }, { threshold: 0.5 });
+    reel.querySelectorAll("video").forEach(function (v) { io.observe(v); });
+    // drag to scroll with a mouse
+    var down = false, sx = 0, sl = 0, moved = false;
+    reel.addEventListener("pointerdown", function (e) { if (e.pointerType !== "mouse") return; down = true; moved = false; sx = e.clientX; sl = reel.scrollLeft; reel.classList.add("grab"); });
+    window.addEventListener("pointermove", function (e) { if (!down) return; if (Math.abs(e.clientX - sx) > 4) moved = true; reel.scrollLeft = sl - (e.clientX - sx); });
+    window.addEventListener("pointerup", function () { down = false; reel.classList.remove("grab"); });
+  })();
+
   /* ---------- clock + block height ---------- */
   var clock = document.getElementById("clock"), block = document.getElementById("block");
   var fmt = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Karachi", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
@@ -75,6 +122,7 @@
     var mid = window.scrollY + window.innerHeight * 0.5, cur = -1;
     secs.forEach(function (s, i) { if (s && s.offsetTop <= mid) cur = i; });
     dockLinks.forEach(function (a, i) { a.classList.toggle("on", i === cur); });
+    document.querySelector(".dock").classList.toggle("show", window.scrollY > window.innerHeight * 0.5);
   };
   window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
 
@@ -136,6 +184,7 @@
   /* ---------- chat illustration ---------- */
   (function () {
     var feed = document.getElementById("feed"), i = 0;
+    if (!feed) return;
     var add = function () {
       var m = CHAT[i % CHAT.length]; i++;
       var el = document.createElement("div");
@@ -183,6 +232,11 @@
     });
   }
 
+  // Layout shifts as lazy images and fonts arrive, so keep the scroll triggers in step with it.
+  var rt; var refresh = function () { clearTimeout(rt); rt = setTimeout(function () { ScrollTrigger.refresh(); }, 200); };
+  window.addEventListener("load", refresh);
+  if (window.ResizeObserver) new ResizeObserver(refresh).observe(document.body);
+
   document.querySelectorAll(".scr").forEach(function (el, i) { scramble(el, 150 + i * 220); });
   gsap.from(".hero .eyebrow, .pitch, .ticket, .tape", { y: 24, opacity: 0, duration: 1, stagger: 0.09, ease: "expo.out", delay: 0.5 });
   gsap.to(".name", { yPercent: -14, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
@@ -191,7 +245,7 @@
     gsap.to(h.querySelectorAll(".ln > span"), { y: 0, duration: 1.1, stagger: 0.09, ease: "expo.out", scrollTrigger: { trigger: h, start: "top 86%" } });
   });
   ScrollTrigger.batch(".rv", { start: "top 92%", onEnter: function (els) { gsap.to(els, { opacity: 1, y: 0, duration: 0.9, stagger: 0.06, ease: "expo.out", overwrite: true }); } });
-  gsap.to(".book-rows i", { scaleX: 1, duration: 1.3, stagger: 0.08, ease: "expo.out", scrollTrigger: { trigger: ".book", start: "top 80%" } });
+  gsap.from(".does li", { y: 20, opacity: 0, duration: 0.7, stagger: 0.04, ease: "expo.out", scrollTrigger: { trigger: ".does", start: "top 90%" } });
   gsap.utils.toArray(".row").forEach(function (r) {
     gsap.to(r.querySelector(".track i"), { scaleX: 1, duration: 1.2, ease: "expo.out", scrollTrigger: { trigger: r, start: "top 88%" } });
   });
