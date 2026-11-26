@@ -11,8 +11,8 @@
   /* ---------- content ---------- */
   var WORK = [
     { t: "DXL", k: "Brand experience", y: "2026", role: "Head of Brand Experience", svc: "Brand experience, partnerships, launch content", tags: ["grow", "create"],
-      d: "A digital-asset education academy in Karachi, building toward a regulated exchange. I shape how the brand shows up for learners and for the institutions we work with: BankIslami, Dewan Group, Saylani Welfare, PVARA, Sindh Police and HEC.",
-      img: ["dxl-grid"] },
+      d: "An institute in Karachi teaching crypto, forex, PSX, international equities, Web3 and AI as one connected pathway. I joined in August 2026 with the brand starting from scratch, and shape how it shows up for learners and for the institutions we work with: BankIslami, Dewan Group, Saylani Welfare, PVARA, Sindh Police and HEC. Below: the leadership business card and the nine-post launch grid.",
+      img: ["dxl-card", "dxl-1", "dxl-2", "dxl-3", "dxl-4", "dxl-5", "dxl-6", "dxl-7", "dxl-8", "dxl-9"], cover: "dxl-grid" },
     { t: "Middlemen", k: "Brand identity and websites", y: "2026", role: "Co-Founder", svc: "Brand identity, website, client sites", tags: ["create", "build"], w: true,
       d: "A business-introductions service I co-founded. I directed the identity and the website, and the same for our first client, Bagh Mining & Minerals.",
       img: ["middlemen-0", "middlemen-1", "bagh-0"] },
@@ -52,7 +52,8 @@
   ];
   var ROLES = [
     { y: "2026 to now", t: "Head of Brand Experience", o: "DXL", live: true, b: [
-      "Lead the brand for a digital-asset education academy in Karachi that is building toward a regulated exchange.",
+      "Lead the brand for an institute in Karachi teaching crypto, forex, PSX, Web3 and AI as one connected pathway. Joined August 2026, with the brand starting from scratch.",
+      "Made the launch campaign, the logo sting and the leadership business cards, and wrote the launch plan.",
       "Work with BankIslami, Dewan Group, Saylani Welfare, PVARA, Sindh Police and HEC on partnerships and joint programmes.",
       "Own how the brand shows up across content, events and partnerships." ] },
     { y: "2026 to now", t: "Co-Founder", o: "Middlemen", live: true, b: [
@@ -265,7 +266,7 @@
     var box = $("#cards"), sheet = $("#sheet"), inner = $("#sheet-in"), last = null;
     box.innerHTML = WORK.map(function (w, i) {
       return '<button type="button" class="card rv' + (w.w ? " w" : "") + '" data-i="' + i + '" data-tags="' + w.tags.join(" ") + '" data-cur="Open">' +
-        '<img loading="lazy" src="img/' + w.img[0] + '.jpg" alt="">' +
+        '<img loading="lazy" src="img/' + (w.cover || w.img[0]) + '.jpg" alt="">' +
         '<span class="card-y m"><span>' + esc(w.y) + "</span><span>" + (w.concept ? "Personal concept" : esc(w.role)) + "</span></span>" +
         '<span class="card-t"><b>' + esc(w.t) + '</b><span class="m">' + esc(w.k) + "</span></span></button>";
     }).join("");
@@ -288,6 +289,14 @@
         '<div class="sheet-imgs">' + w.img.map(function (m) { return '<img src="img/' + m + '.jpg" alt="' + esc(w.t) + '">'; }).join("") + "</div>";
       sheet.hidden = false; inner.scrollTop = 0; if (lenis) lenis.stop(); document.body.style.overflow = "hidden"; $("#sheet-x").focus();
     }
+    var TILES = ["Something is being built in Karachi", "The world is moving fast. So is Pakistan", "3rd", "Adoption is not the problem. Structure is", "The mark", "Trading is a skill", "Web3 is a lens", "Every market. One pathway", "Every seat here is earned"];
+    var tiles = $("#tiles");
+    // Instagram shows the newest post first, so the grid reads 9 to 1.
+    tiles.innerHTML = TILES.map(function (t, i) { return { t: t, n: i + 1 }; }).reverse().map(function (x) {
+      return '<button type="button" class="tile" data-cur="Open" aria-label="Post ' + x.n + ": " + esc(x.t) + '"><img loading="lazy" src="img/dxl-' + x.n + '.jpg" alt=""><span class="m">0' + x.n + " · " + esc(x.t) + "</span></button>";
+    }).join("");
+    $$(".tile", tiles).forEach(function (t) { tilt(t, 10); t.addEventListener("click", function () { open(0, t); }); });
+    $("#dxl-open").addEventListener("click", function (e) { open(0, e.currentTarget); });
     function close() { if (sheet.hidden) return; sheet.hidden = true; if (lenis) lenis.start(); document.body.style.overflow = ""; if (last) last.focus(); }
     $("#sheet-x").addEventListener("click", close);
     addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
@@ -372,7 +381,7 @@
   (function () {
     var pal = $("#pal"), q = $("#pal-q"), list = $("#pal-list"), sel = 0, shown = [];
     var ITEMS = [
-      { n: "What I do", k: "Go", f: function () { go("#what"); } }, { n: "Evidence", k: "Go", f: function () { go("#proof"); } },
+      { n: "What I do", k: "Go", f: function () { go("#what"); } }, { n: "DXL, right now", k: "Go", f: function () { go("#dxl"); } }, { n: "Evidence", k: "Go", f: function () { go("#proof"); } },
       { n: "Selected work", k: "Go", f: function () { go("#work"); } }, { n: "Experience", k: "Go", f: function () { go("#xp"); } },
       { n: "How I'd grow a brand", k: "Go", f: function () { go("#lab"); } }, { n: "Why hire me", k: "Go", f: function () { go("#why"); } },
       { n: "Contact", k: "Go", f: function () { go("#contact"); } },
