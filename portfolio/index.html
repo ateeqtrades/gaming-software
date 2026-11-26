@@ -1,97 +1,111 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-mode="create">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Syed Ahmad Hassan · Creative marketer</title>
 <meta name="description" content="Syed Ahmad Hassan. Creative marketer: brand, content, ads and community. Head of Brand Experience at DXL, co-founder of Middlemen. Karachi, working internationally.">
-<meta name="theme-color" content="#F2F0EA">
+<meta name="theme-color" content="#070708">
 <meta property="og:title" content="Syed Ahmad Hassan">
-<meta property="og:description" content="Creative marketer. I make the work, run the ads and know the room.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230B0C0E'/%3E%3Cpath d='M6 22l6-8 5 4 9-11' fill='none' stroke='%232440FF' stroke-width='3'/%3E%3C/svg%3E">
+<meta property="og:description" content="Creative marketer. I make the work, run the ads and build the product.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23070708'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23FF5B2E'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=Martian+Mono:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=Instrument+Serif:ital@1&family=Martian+Mono:wght@300;400;500&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="cross" aria-hidden="true"><i class="cx"></i><i class="cy"></i><span class="cl">0.00</span></div>
-<div class="peek" aria-hidden="true"><img alt=""></div>
+<div class="loader" id="loader" aria-hidden="true"><b>SAH</b><span id="load-n">000</span></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="cur" id="cur" aria-hidden="true"><i></i><span></span></div>
+<div class="prog" aria-hidden="true"><i id="prog"></i></div>
 
-<header class="bar">
-  <a class="sym" href="#top"><b>AHMAD</b><span>/HIRE</span></a>
-  <span class="bar-mid m"><span class="live"></span><span id="clock">--:--:--</span> KHI</span>
-  <span class="bar-r m">BLOCK <span id="block">000000</span></span>
+<header class="nav">
+  <a class="logo" href="#top" aria-label="Top">SAH<i></i></a>
+  <div class="modes" role="group" aria-label="What I do">
+    <button type="button" data-mode="create" class="on">Create</button>
+    <button type="button" data-mode="grow">Grow</button>
+    <button type="button" data-mode="build">Build</button>
+  </div>
+  <button class="menu-btn" id="menu-btn" type="button" aria-haspopup="dialog">Menu <kbd>K</kbd></button>
 </header>
 
 <main id="top">
-  <!-- HERO -->
-  <section class="hero" data-sec="Listing">
-    <canvas class="depth" aria-hidden="true"></canvas>
-    <div class="tape" aria-hidden="true"><div class="tape-in">
-      <span>DXL <b class="up">▲</b> Head of Brand Experience · 2026</span><span>AI <b class="up">▲</b> Apps, games and websites</span><span>MIDDLEMEN <b class="up">▲</b> Co-Founder · 2026</span><span>COSMIC <b class="up">▲</b> Marketing Head · 2025</span><span>KARACHI <b class="up">▲</b> Working internationally</span>
-      <span>DXL <b class="up">▲</b> Head of Brand Experience · 2026</span><span>AI <b class="up">▲</b> Apps, games and websites</span><span>MIDDLEMEN <b class="up">▲</b> Co-Founder · 2026</span><span>COSMIC <b class="up">▲</b> Marketing Head · 2025</span><span>KARACHI <b class="up">▲</b> Working internationally</span>
-    </div></div>
+  <section class="hero" id="hero">
+    <canvas class="field" id="field" aria-hidden="true"></canvas>
     <div class="wrap hero-in">
-      <p class="m eyebrow">Listing 001 · Karachi, Pakistan → Worldwide</p>
-      <h1 class="name" aria-label="Syed Ahmad Hassan"><span class="scr">Syed Ahmad</span><span class="scr">Hassan</span></h1>
+      <p class="m hero-top"><span class="dot"></span>Open to the right offer · Karachi → worldwide</p>
+      <h1 class="name vf" aria-label="Syed Ahmad Hassan"><span class="vl">Syed Ahmad</span><span class="vl">Hassan</span></h1>
       <div class="hero-row">
-        <p class="pitch">Creative marketer. I make brands people notice, <em>then prove it worked.</em></p>
-        <aside class="ticket" aria-label="Summary">
-          <div class="t-row"><span class="m">Symbol</span><b>AHMAD</b></div>
-          <div class="t-row"><span class="m">Now</span><b>Head of Brand Experience, DXL</b></div>
-          <div class="t-row"><span class="m">Also</span><b>Co-Founder, Middlemen</b></div>
-          <div class="t-row"><span class="m">Does</span><b>Brand, content, ads, community, AI-built products</b></div>
-          <div class="t-row"><span class="m">Status</span><b class="up">● Open to the right offer</b></div>
-          <a class="buy mag" href="#contact">Place order <i>→</i></a>
-        </aside>
+        <p class="pitch">Creative marketer. <em id="mode-line">I make it.</em> <span id="mode-sub">Identities, content, reels and AI-made video.</span></p>
+        <ul class="now">
+          <li><span class="m">Now</span>Head of Brand Experience, DXL</li>
+          <li><span class="m">Also</span>Co-Founder, Middlemen</li>
+        </ul>
       </div>
     </div>
-    <span class="m scroll-hint" aria-hidden="true">Scroll for the work ↓</span>
+    <p class="m hint" aria-hidden="true"><span class="fine">Move your cursor · switch Create / Grow / Build</span><span class="coarse">Tap Create / Grow / Build · scroll</span></p>
   </section>
 
-  <!-- THESIS -->
-  <section class="thesis" id="thesis" data-sec="Thesis">
+  <div class="strip" aria-hidden="true"><div class="strip-in" id="strip">
+    <span>Brand identity</span><span>Social content</span><span>Reels</span><span>AI video</span><span>Meta ads</span><span>Content strategy</span><span>Community</span><span>Websites</span><span>Apps and games</span>
+    <span>Brand identity</span><span>Social content</span><span>Reels</span><span>AI video</span><span>Meta ads</span><span>Content strategy</span><span>Community</span><span>Websites</span><span>Apps and games</span>
+  </div></div>
+
+  <section class="what" id="what">
     <div class="wrap">
-      <p class="m eyebrow rv">01 · The position</p>
-      <h2 class="huge"><span class="ln"><span>I make the work.</span></span><span class="ln"><span>I run the ads.</span></span><span class="ln"><span class="ac">I build the product.</span></span></h2>
-      <div class="three">
-        <div class="rv"><span class="m">Create</span><p>Brand identities, packaging, social content, reels and AI-made video. I started as a designer in 2021 and I still make the thing myself: shoot, edit, design, render.</p></div>
-        <div class="rv"><span class="m">Grow</span><p>Meta ads, content strategy and social for hardware, energy and e-commerce brands. At Cosmic Computers I ran the content and the campaigns behind it.</p></div>
-        <div class="rv"><span class="m">Build</span><p>I'm obsessed with AI and I build with it: apps, games and websites. A gaming-zone management app with billing and remote PC control, client sites, and this one.</p></div>
+      <p class="m eyebrow rv">01 · What I do</p>
+      <h2 class="big rv">One person. <em>Three jobs.</em></h2>
+      <div class="panels" id="panels">
+        <article class="panel" data-mode="create" tabindex="0">
+          <span class="m">01</span><h3>Create</h3>
+          <p>Brand identities, packaging, social content, reels and AI-made video. I started as a designer in 2021 and I still make the thing myself: shoot, edit, design, render.</p>
+          <ul><li>Brand identity</li><li>Packaging</li><li>Reels</li><li>AI UGC and product ads</li></ul>
+        </article>
+        <article class="panel" data-mode="grow" tabindex="0">
+          <span class="m">02</span><h3>Grow</h3>
+          <p>Meta ads, content strategy, social and community for hardware, energy, e-commerce and crypto brands. I run the campaign behind the creative and change what does not perform.</p>
+          <ul><li>Meta ads</li><li>Content strategy</li><li>Community</li><li>Teams and budgets</li></ul>
+        </article>
+        <article class="panel" data-mode="build" tabindex="0">
+          <span class="m">03</span><h3>Build</h3>
+          <p>I'm obsessed with AI and I build with it: apps, games and websites. A gaming-zone management app with billing and remote PC control, client sites, and this one.</p>
+          <ul><li>Websites</li><li>Web apps</li><li>Games</li><li>AI workflows</li></ul>
+        </article>
       </div>
-      <ul class="does" aria-label="What I do">
-        <li>Brand identity</li><li>Social content</li><li>Reels and short video</li><li>AI UGC and product ads</li><li>Meta ads</li><li>Content strategy</li><li>Packaging</li><li>Community</li><li>Websites</li><li>Apps and games</li><li>AI workflows</li>
-      </ul>
     </div>
   </section>
 
-  <!-- PROOF -->
-  <section class="proof" id="proof" data-sec="Proof">
-    <div class="wrap">
-      <p class="m eyebrow rv">02 · Evidence</p>
-      <h2 class="big"><span class="ln"><span>Don't take my word.</span></span><span class="ln"><span class="ac">Watch the tape.</span></span></h2>
-      <p class="m drag rv">Drag or swipe → real work, 2022 to 2026</p>
+  <section class="reel-sec" id="proof">
+    <div class="reel-pin">
+      <div class="wrap reel-head">
+        <p class="m eyebrow">02 · Evidence</p>
+        <h2 class="big">Don't take my word. <em>Watch.</em></h2>
+        <p class="m reel-note"><span class="fine">Keep scrolling · real work, 2022 to 2026</span><span class="coarse">Swipe → real work, 2022 to 2026</span></p>
+      </div>
+      <div class="reel" id="reel"></div>
     </div>
-    <div class="reel" id="reel" tabindex="0" aria-label="Work samples"></div>
   </section>
 
-  <!-- CHART -->
-  <section class="chart" id="chart" data-sec="Chart">
+  <section class="work" id="work">
     <div class="wrap">
-      <p class="m eyebrow rv">03 · AHMAD · 5Y · all time</p>
-      <h2 class="big"><span class="ln"><span>Five years.</span></span><span class="ln"><span>One direction.</span></span></h2>
-      <div class="gantt">
-        <div class="axis m" aria-hidden="true"><span>2021</span><span>2022</span><span>2023</span><span>2024</span><span>2025</span><span>2026</span></div>
-        <div class="row" style="--s:1;--e:2"><div class="lab"><b>Freelance Designer</b><span class="m">Where it started</span></div><div class="track"><i></i></div></div>
-        <div class="row" style="--s:2;--e:4"><div class="lab"><b>Digital Marketing Specialist</b><span class="m">IndusTech.pk &amp; TOS.pk</span></div><div class="track"><i></i></div></div>
-        <div class="row" style="--s:2;--e:6"><div class="lab"><b>Community Lead</b><span class="m">Crypto Beast · Telegram and Discord · 2022 to 2025</span></div><div class="track"><i></i></div></div>
-        <div class="row" style="--s:4;--e:6"><div class="lab"><b>Business Development Executive</b><span class="m">DSG Energy</span></div><div class="track"><i></i></div></div>
-        <div class="row" style="--s:5;--e:6"><div class="lab"><b>Marketing Head</b><span class="m">Cosmic Computers</span></div><div class="track"><i></i></div></div>
-        <div class="row hot" style="--s:6;--e:7"><div class="lab"><b>Head of Brand Experience</b><span class="m">DXL · 2026 to present</span></div><div class="track"><i></i></div></div>
-        <div class="row hot" style="--s:6;--e:7"><div class="lab"><b>Co-Founder</b><span class="m">Middlemen · 2026 to present</span></div><div class="track"><i></i></div></div>
+      <p class="m eyebrow rv">03 · Selected work</p>
+      <div class="work-head rv">
+        <h2 class="big">Open <em>anything.</em></h2>
+        <div class="filters" id="filters" role="group" aria-label="Filter work">
+          <button type="button" data-f="all" class="on">All</button><button type="button" data-f="create">Create</button><button type="button" data-f="grow">Grow</button><button type="button" data-f="build">Build</button>
+        </div>
       </div>
+      <div class="cards" id="cards"></div>
+    </div>
+  </section>
+
+  <section class="xp" id="xp">
+    <div class="wrap">
+      <p class="m eyebrow rv">04 · Experience</p>
+      <h2 class="big rv">Where I've <em>been.</em></h2>
+      <div class="roles" id="roles"></div>
       <div class="edu rv">
         <div><span class="m">Education</span><b>Bachelor of Media Science, Advertising Strategy &amp; Design</b><span>SZABIST</span></div>
         <div><span class="m">Before that</span><b>A-Levels</b><span>Cedar College</span></div>
@@ -99,83 +113,73 @@
     </div>
   </section>
 
-  <!-- WORK -->
-  <section class="work" id="work" data-sec="Work">
+  <section class="lab" id="lab">
     <div class="wrap">
-      <p class="m eyebrow rv">04 · Selected work</p>
-      <h2 class="big"><span class="ln"><span>Eight positions.</span></span></h2>
-      <div class="list" id="list"></div>
+      <p class="m eyebrow rv">05 · How I think</p>
+      <h2 class="big rv">How I'd grow a brand <em>in Pakistan.</em></h2>
+      <p class="m lab-note rv">A plan, not a past result. Pick a stage.</p>
+      <div class="stages rv" id="stages" role="tablist"></div>
+      <div class="stage-body rv" id="stage-body" role="tabpanel"></div>
+
+      <div class="sim rv">
+        <div class="sim-l">
+          <h3>Run the funnel yourself.</h3>
+          <p class="m">An illustrative model. The inputs are your assumptions, not my results.</p>
+          <div class="sliders" id="sliders"></div>
+        </div>
+        <div class="sim-r" id="sim-out" aria-live="polite"></div>
+      </div>
     </div>
   </section>
 
-  <!-- WHY -->
-  <section class="why" id="why" data-sec="Why">
+  <section class="why" id="why">
     <div class="wrap">
-      <p class="m eyebrow rv">05 · The case</p>
-      <h2 class="huge"><span class="ln"><span>What you get</span></span><span class="ln"><span>when you</span></span><span class="ln"><span class="ac">hire me.</span></span></h2>
-      <ol class="args">
-        <li class="rv"><span class="m">The eye</span><h3>A designer who became a marketer.</h3><p>I can build the identity, the packaging and the post myself, so the brand looks the same in the deck and in the feed.</p></li>
-        <li class="rv"><span class="m">The numbers</span><h3>Creative that has to earn its place.</h3><p>I run Meta ads and content strategy alongside the creative. If it doesn't bring leads or sales, I change it.</p></li>
-        <li class="rv"><span class="m">The speed</span><h3>AI-native production.</h3><p>Nano Banana, Kling, Sora, Veo and Higgsfield for UGC and product video. More variations, faster, without waiting on a shoot.</p></li>
-        <li class="rv"><span class="m">The build</span><h3>I ship products, not just posts.</h3><p>Apps, games and websites, built with AI tools. When a campaign needs a landing page, a tool or a dashboard, I don't wait for a developer.</p></li>
-        <li class="rv"><span class="m">The room</span><h3>I've run communities, not just campaigns.</h3><p>Years of moderating live groups taught me what people ask, what they trust and what makes them stay.</p></li>
+      <p class="m eyebrow rv">06 · The case</p>
+      <ol class="args" id="args">
+        <li><span class="m">The eye</span><h3>A designer who became a marketer.</h3><p>I can build the identity, the packaging and the post myself, so the brand looks the same in the deck and in the feed.</p></li>
+        <li><span class="m">The numbers</span><h3>Creative that has to earn its place.</h3><p>I run Meta ads and content strategy alongside the creative. If it doesn't bring leads or sales, I change it.</p></li>
+        <li><span class="m">The speed</span><h3>AI-native production.</h3><p>Nano Banana, Kling, Sora, Veo and Higgsfield for UGC and product video. More variations, faster, without waiting on a shoot.</p></li>
+        <li><span class="m">The build</span><h3>I ship products, not just posts.</h3><p>Apps, games and websites, built with AI tools. When a campaign needs a landing page, a tool or a dashboard, I don't wait for a developer.</p></li>
+        <li><span class="m">The room</span><h3>I've run communities, not just campaigns.</h3><p>Years of moderating live groups taught me what people ask, what they trust and what makes them stay.</p></li>
       </ol>
-      <div class="mkt rv">
-        <b>3rd</b>
-        <p>If you're in crypto: I already work in it at DXL. Pakistan ranks 3rd in the Chainalysis 2025 Global Crypto Adoption Index.</p>
-      </div>
-
-      <div class="playbook">
-        <div class="play-head rv"><h3>How I'd grow a brand in Pakistan</h3><p class="m">A plan, not a past result. This is how I would run it.</p></div>
-        <div class="funnel">
-          <div class="stage rv"><span class="m">01 · Awareness</span><b>Get seen by the right people</b><ul><li>Paid on Meta, TikTok and Google, with AI-made creative so every audience gets tested against many variations</li><li>Creators and KOLs chosen for trust with their audience, not follower count</li><li>Global campaigns localised into Urdu and English that sound like Pakistan</li></ul></div>
-          <div class="stage rv"><span class="m">02 · Activation</span><b>Turn interest into a first action</b><ul><li>University tours and on-ground events with a QR-to-signup loop, so offline turns into measurable online users</li><li>Short education content that removes the fear before the first step</li><li>Landing pages and onboarding tested one variable at a time</li></ul></div>
-          <div class="stage rv"><span class="m">03 · Retention</span><b>Give them a reason to stay</b><ul><li>Community channels run daily: answers, AMAs, moderation</li><li>Lifecycle messages tied to what the user actually did</li><li>Local partnerships that make the product useful in daily life</li></ul></div>
-          <div class="stage rv"><span class="m">04 · Advocacy</span><b>Make users the channel</b><ul><li>Referral programmes with clear, honest rewards</li><li>Ambassadors from campuses and communities</li><li>User-made content fed back into paid creative</li></ul></div>
-        </div>
-        <p class="measure rv"><span class="m">Measured weekly</span>Cost per acquired user · activation rate · 30-day retention · share of users from referral · return on ad spend</p>
-      </div>
     </div>
   </section>
 
-  <!-- TOOLS -->
-  <section class="tools" aria-label="Toolkit">
-    <div class="tools-in" aria-hidden="true">
-      <span>Nano Banana</span><span>Kling</span><span>Sora</span><span>Veo</span><span>Higgsfield</span><span>Claude</span><span>Meta Ads</span><span>Brand systems</span><span>Content strategy</span><span>Community</span>
-      <span>Nano Banana</span><span>Kling</span><span>Sora</span><span>Veo</span><span>Higgsfield</span><span>Claude</span><span>Meta Ads</span><span>Brand systems</span><span>Content strategy</span><span>Community</span>
-    </div>
-  </section>
+  <div class="strip tools" aria-hidden="true"><div class="strip-in">
+    <span>Nano Banana</span><span>Kling</span><span>Sora</span><span>Veo</span><span>Higgsfield</span><span>Claude</span><span>Meta Ads</span><span>Brand systems</span><span>Community</span>
+    <span>Nano Banana</span><span>Kling</span><span>Sora</span><span>Veo</span><span>Higgsfield</span><span>Claude</span><span>Meta Ads</span><span>Brand systems</span><span>Community</span>
+  </div></div>
 
-  <!-- CONTACT -->
-  <section class="contact" id="contact" data-sec="Order">
+  <section class="contact" id="contact">
     <div class="wrap">
-      <p class="m eyebrow rv">06 · Execute</p>
-      <h2 class="huge"><span class="ln"><span>Place the</span></span><span class="ln"><span class="ac">order.</span></span></h2>
+      <p class="m eyebrow rv">07 · Contact</p>
+      <h2 class="talk vf" aria-label="Let's talk."><span class="vl">Let's talk.</span></h2>
       <div class="c-grid">
-        <button class="mail rv" id="mail" type="button" aria-label="Copy email address"><span class="m">Email · tap to copy</span><b>s.syedahmadhassan@gmail.com</b><i id="mail-ok" class="m">Copied</i></button>
+        <button class="mail rv" id="mail" type="button" data-cur="Copy" aria-label="Copy email address"><span class="m">Email · tap to copy</span><b>s.syedahmadhassan@gmail.com</b><i id="mail-ok" class="m">Copied</i></button>
         <div class="links rv">
-          <a class="mag" href="https://www.linkedin.com/in/syed-ahmad-hassan-450577161/" target="_blank" rel="noopener"><span class="m">LinkedIn</span><b>syed-ahmad-hassan ↗</b></a>
-          <a class="mag" href="https://www.instagram.com/syed.ahmad.hassan.1" target="_blank" rel="noopener"><span class="m">Instagram</span><b>@syed.ahmad.hassan.1 ↗</b></a>
-          <a class="mag" href="https://wa.me/923082612601" target="_blank" rel="noopener"><span class="m">WhatsApp</span><b>+92 308 2612601 ↗</b></a>
-          <a class="mag res" href="Syed_Ahmad_Hassan_Resume.pdf" target="_blank" rel="noopener"><span class="m">Résumé</span><b>Download PDF ↓</b></a>
+          <a href="https://www.linkedin.com/in/syed-ahmad-hassan-450577161/" target="_blank" rel="noopener"><span class="m">LinkedIn</span><b>syed-ahmad-hassan ↗</b></a>
+          <a href="https://www.instagram.com/syed.ahmad.hassan.1" target="_blank" rel="noopener"><span class="m">Instagram</span><b>@syed.ahmad.hassan.1 ↗</b></a>
+          <a href="https://wa.me/923082612601" target="_blank" rel="noopener"><span class="m">WhatsApp</span><b>+92 308 2612601 ↗</b></a>
+          <a class="res" href="Syed_Ahmad_Hassan_Resume.pdf" target="_blank" rel="noopener"><span class="m">Résumé</span><b>Download PDF ↓</b></a>
         </div>
       </div>
-      <p class="m foot">© 2026 Syed Ahmad Hassan · Karachi · Designed and built as part of the application</p>
+      <p class="m foot">© 2026 Syed Ahmad Hassan · Karachi · Designed and built by me, with AI</p>
     </div>
   </section>
 </main>
 
-<nav class="dock" aria-label="Sections">
-  <a href="#thesis"><i>1</i><span>Thesis</span></a>
-  <a href="#proof"><i>2</i><span>Proof</span></a>
-  <a href="#chart"><i>3</i><span>Chart</span></a>
-  <a href="#work"><i>4</i><span>Work</span></a>
-  <a href="#why"><i>5</i><span>Why</span></a>
-  <a href="#contact" class="go"><i>6</i><span>Order</span></a>
-</nav>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Project" hidden>
+  <button class="sheet-x" id="sheet-x" type="button" aria-label="Close">Close <kbd>Esc</kbd></button>
+  <div class="sheet-in" id="sheet-in" data-lenis-prevent></div>
+</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<div class="pal" id="pal" role="dialog" aria-modal="true" aria-label="Menu" hidden>
+  <div class="pal-box">
+    <input id="pal-q" type="text" placeholder="Jump to, or do something…" autocomplete="off" aria-label="Search menu">
+    <ul id="pal-list"></ul>
+  </div>
+</div>
+
 <script src="https://unpkg.com/lenis@1.3.27/dist/lenis.min.js"></script>
 <script src="app.js"></script>
 </body>

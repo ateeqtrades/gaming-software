@@ -1,261 +1,409 @@
-/* Portfolio: depth-chart hero, scramble type, crosshair cursor, scroll reveals, work list, chat illustration. */
+/* Syed Ahmad Hassan. Portfolio interactions. No build step. */
 (function () {
-  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var fine = window.matchMedia("(pointer: fine)").matches;
-  var hasGsap = typeof window.gsap !== "undefined";
-  if (hasGsap) document.documentElement.classList.add("js");
+  "use strict";
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var fine = matchMedia("(pointer: fine)").matches;
+  var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
+  var esc = function (s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;"); };
 
   /* ---------- content ---------- */
   var WORK = [
-    { t: "DXL", k: "Brand experience", y: "2026", role: "Head of Brand Experience", svc: "Brand experience, partnerships, launch content",
-      d: "A digital-asset education academy in Karachi, building toward a PVARA-aligned exchange. I joined in 2026 to shape how the brand shows up, for learners and for institutions such as PVARA, Sindh Police, Saylani Welfare, BankIslami, Dewan University and HEC.",
-      img: ["dxl-grid"], one: true },
-    { t: "Middlemen", k: "Brand identity and websites", y: "2026", role: "Co-Founder", svc: "Brand identity, website, client sites",
+    { t: "DXL", k: "Brand experience", y: "2026", role: "Head of Brand Experience", svc: "Brand experience, partnerships, launch content", tags: ["grow", "create"],
+      d: "A digital-asset education academy in Karachi, building toward a regulated exchange. I shape how the brand shows up for learners and for the institutions we work with: BankIslami, Dewan Group, Saylani Welfare, PVARA, Sindh Police and HEC.",
+      img: ["dxl-grid"] },
+    { t: "Middlemen", k: "Brand identity and websites", y: "2026", role: "Co-Founder", svc: "Brand identity, website, client sites", tags: ["create", "build"], w: true,
       d: "A business-introductions service I co-founded. I directed the identity and the website, and the same for our first client, Bagh Mining & Minerals.",
-      img: ["middlemen-0", "bagh-0"], wide: true },
-    { t: "Gaming Zone Manager", k: "Software, built with AI", y: "2026", role: "Product and build", svc: "Web app: server, staff dashboard, PC agent",
+      img: ["middlemen-0", "middlemen-1", "bagh-0"] },
+    { t: "Gaming Zone Manager", k: "Software, built with AI", y: "2026", role: "Product and build", svc: "Web app: server, staff dashboard, PC agent", tags: ["build"], w: true,
       d: "Software for running a gaming zone: a live floor map of every PC and console, prepaid and pay-per-minute sessions, member balances, remote lock and unlock of each PC, and revenue reports. I built it with AI tools.",
-      img: ["gamezone-0"], wide: true, one: true },
-    { t: "Cosmic Computers", k: "Social and Meta ads", y: "2025", role: "Marketing Head", svc: "Content strategy, shoots, editing, design, Meta ads",
+      img: ["gamezone-0"] },
+    { t: "Cosmic Computers", k: "Social and Meta ads", y: "2025", role: "Marketing Head", svc: "Content strategy, shoots, editing, design, Meta ads", tags: ["grow", "create"],
       d: "End-to-end social for a PC-hardware brand. I shot, edited and designed the content, and ran the Meta campaigns that turned it into leads and sales for a Pakistani audience.",
       img: ["cosmic-1", "cosmic-2", "cosmic-3"] },
-    { t: "AI Content Production", k: "AI UGC and product video", y: "2021 to 2026", role: "Editor and producer", svc: "AI creatives with Nano Banana, Kling, Sora, Veo, Higgsfield",
+    { t: "AI Content", k: "AI UGC and product video", y: "2021 to 2026", role: "Editor and producer", svc: "Nano Banana, Kling, Sora, Veo, Higgsfield", tags: ["create"],
       d: "UGC-style videos, product ads and visuals made with AI tools from concept to edit. Faster production and more creative variations than a traditional shoot allows.",
       img: ["ai-1", "ai-2", "ai-3"] },
-    { t: "Moorish Construction", k: "Brand identity", y: "2025", role: "Creative direction", svc: "Brand design",
+    { t: "Moorish Construction", k: "Brand identity", y: "2025", role: "Creative direction", svc: "Brand design", tags: ["create"], w: true,
       d: "Led the brand design alone, end to end: positioning, visual language and messaging for a construction and real estate company that needed to look as reliable as it builds.",
-      img: ["moorish-0", "moorish-1", "moorish-3"], wide: true },
-    { t: "H23", k: "Web3 agency identity", y: "2023", role: "Creative direction", svc: "Brand design", concept: true,
+      img: ["moorish-0", "moorish-1", "moorish-3"] },
+    { t: "H23", k: "Web3 agency identity", y: "2023", role: "Creative direction", svc: "Brand design", tags: ["create"], w: true, concept: true,
       d: "A self-initiated identity for a fictional Web3 agency. Not client work. I made it to practise building a brand for blockchain, crypto and NFTs: monochrome, clean lines, high-tech without the clichés.",
-      img: ["h23-0", "h23-1", "h23-2"], wide: true },
-    { t: "Glod Water", k: "Luxury packaging and identity", y: "2022", role: "Creative director", svc: "Brand design, product rendering", concept: true,
+      img: ["h23-0", "h23-1", "h23-2"] },
+    { t: "Glod Water", k: "Luxury packaging", y: "2022", role: "Creative director", svc: "Brand design, product rendering", tags: ["create"], concept: true,
       d: "A self-initiated luxury water brand. Not client work. Logo, packaging and renders for a product that sells indulgence as much as hydration.",
-      img: ["glod-3", "glod-1", "glod-0"] },
+      img: ["glod-3", "glod-1", "glod-0"] }
   ];
-
-  /* The evidence reel: v = video, a = aspect ratio */
   var REEL = [
-    { v: "ai-1", a: "9/16", c: "AI Content Production", s: "UGC-style video, made with AI tools" },
+    { v: "ai-1", a: "9/16", c: "AI Content", s: "UGC-style video, made with AI tools" },
     { i: "cosmic-1", a: "4/5", c: "Cosmic Computers", s: "Social content, 2025" },
     { v: "cosmic-reel", a: "9/16", c: "Cosmic Computers", s: "Reel, shot and edited" },
     { i: "dxl-grid", a: "4/5", c: "DXL", s: "Instagram launch grid, 2026" },
     { i: "middlemen-0", a: "16/10", c: "Middlemen", s: "Brand and website, 2026" },
     { i: "gamezone-0", a: "16/10", c: "Gaming Zone Manager", s: "Web app, built with AI, 2026" },
-    { v: "ai-2", a: "9/16", c: "AI Content Production", s: "Product ad, made with AI tools" },
+    { v: "ai-2", a: "9/16", c: "AI Content", s: "Product ad, made with AI tools" },
     { i: "cosmic-2", a: "5/4", c: "Cosmic Computers", s: "Campaign creative" },
     { i: "moorish-0", a: "16/10", c: "Moorish Construction", s: "Brand identity, 2025" },
-    { i: "ai-2", a: "4/5", c: "AI Content Production", s: "AI product visuals" },
+    { i: "ai-2", a: "4/5", c: "AI Content", s: "AI product visuals" },
     { i: "bagh-0", a: "16/10", c: "Bagh Mining & Minerals", s: "Website, via Middlemen, 2026" },
     { i: "h23-0", a: "1/1", c: "H23", s: "Concept identity, 2023", k: true },
-    { i: "glod-3", a: "2/3", c: "Glod Water", s: "Concept packaging, 2022", k: true },
+    { i: "glod-3", a: "2/3", c: "Glod Water", s: "Concept packaging, 2022", k: true }
   ];
-
-  var CHAT = [
-    { c: "pin", n: "Pinned · Ahmad", x: "AMA tonight, 8 pm PKT. Drop your questions here first." },
-    { n: "Member", x: "Is it too late to enter this move?" },
-    { c: "me", n: "Ahmad · Admin", x: "Nobody here can promise you that. Check your risk first, then decide." },
-    { n: "Member", x: "New here. Where do I start?" },
-    { c: "me", n: "Ahmad · Admin", x: "Welcome. Read the pinned guide, then ask anything. No question is too basic." },
-    { n: "Member", x: "DM me for guaranteed signals" },
-    { c: "pin", n: "Moderation", x: "Removed: signal spam. Second warning is a ban." },
-    { n: "Member", x: "Good AMA last week, more of those please" },
+  var ROLES = [
+    { y: "2026 to now", t: "Head of Brand Experience", o: "DXL", live: true, b: [
+      "Lead the brand for a digital-asset education academy in Karachi that is building toward a regulated exchange.",
+      "Work with BankIslami, Dewan Group, Saylani Welfare, PVARA, Sindh Police and HEC on partnerships and joint programmes.",
+      "Own how the brand shows up across content, events and partnerships." ] },
+    { y: "2026 to now", t: "Co-Founder", o: "Middlemen", live: true, b: [
+      "Co-founded a business-introductions company connecting Pakistani exporters with overseas buyers.",
+      "Built the brand, the websites and the outbound sales pipeline from zero." ] },
+    { y: "2025", t: "Marketing Head", o: "Cosmic Computers", b: [
+      "Ran social media, Meta ads and content strategy for a PC-hardware brand.",
+      "Shot, edited and designed the creative, then tested it in paid campaigns." ] },
+    { y: "2024 to 2025", t: "Business Development Executive", o: "DSG Energy", b: [
+      "Managed content, teams and budgets at large scale.",
+      "Business development: prospecting, client conversations and partnerships." ] },
+    { y: "2022 to 2025", t: "Community Lead", o: "Crypto Beast", b: [
+      "Led a crypto-trading community on Telegram and Discord: moderation, daily engagement and AMAs." ] },
+    { y: "2022 to 2024", t: "Digital Marketing Specialist", o: "IndusTech.pk & TOS.pk", b: [
+      "Digital marketing, social content and campaigns." ] },
+    { y: "2021", t: "Freelance Designer", o: "Where it started", b: [
+      "Brand and social design for early clients." ] }
   ];
-
-  /* ---------- work list ---------- */
-  var list = document.getElementById("list");
-  WORK.forEach(function (w, i) {
-    var el = document.createElement("article");
-    el.className = "item rv";
-    var gal = w.img
-      ? '<div class="gal' + (w.wide ? " wide" : "") + (w.one ? " one" : "") + '">' + w.img.slice(0, w.one ? 1 : w.wide ? 2 : 3).map(function (n) { return '<img src="img/' + n + '.jpg" alt="' + w.t + ' work sample" loading="lazy">'; }).join("") + "</div>"
-      : '<div class="typo"><b>' + w.typo[0] + "</b><span>" + w.typo[1] + "</span></div>";
-    el.innerHTML =
-      '<button class="item-h" type="button" aria-expanded="false"' + (w.img ? ' data-peek="img/' + w.img[0] + '.jpg"' : "") + ">" +
-      '<span class="m n">0' + (i + 1) + "</span><h3>" + w.t + (w.concept ? '<span class="concept">CONCEPT</span>' : "") + "</h3>" +
-      '<span class="m k">' + w.k + '</span><span class="m y">' + w.y + '</span><span class="pm" aria-hidden="true">+</span></button>' +
-      '<div class="item-b"><div><div class="detail"><div><p>' + w.d + '</p><div class="meta"><div><span class="m">Role</span><span>' + w.role +
-      '</span></div><div><span class="m">Scope</span><span>' + w.svc + '</span></div><div><span class="m">Type</span><span>' +
-      (w.concept ? "Personal concept project" : "Real engagement") + "</span></div></div></div>" + gal + "</div></div></div>";
-    list.appendChild(el);
-    var btn = el.querySelector(".item-h");
-    btn.addEventListener("click", function () {
-      var open = el.classList.toggle("open");
-      btn.setAttribute("aria-expanded", open ? "true" : "false");
-      if (hasGsap) setTimeout(function () { ScrollTrigger.refresh(); }, 750);
-    });
-  });
-
-  /* ---------- evidence reel ---------- */
-  (function () {
-    var reel = document.getElementById("reel");
-    REEL.forEach(function (r) {
-      var f = document.createElement("figure");
-      f.className = "clip";
-      f.style.setProperty("--a", r.a);
-      var media = r.v
-        ? '<video muted loop playsinline preload="none" poster="media/' + r.v + '.jpg"><source src="media/' + r.v + '.mp4" type="video/mp4"></video><span class="m play">Video</span>'
-        : '<img src="img/' + r.i + '.jpg" alt="' + r.c + ": " + r.s + '" loading="lazy" draggable="false">';
-      f.innerHTML = '<div class="clip-m">' + media + "</div><figcaption><b>" + r.c + (r.k ? '<span class="concept">CONCEPT</span>' : "") + '</b><span class="m">' + r.s + "</span></figcaption>";
-      reel.appendChild(f);
-    });
-    var io = new IntersectionObserver(function (en) {
-      en.forEach(function (e) { if (e.isIntersecting && !reduce) e.target.play().catch(function () {}); else e.target.pause(); });
-    }, { threshold: 0.5 });
-    reel.querySelectorAll("video").forEach(function (v) { io.observe(v); });
-    // drag to scroll with a mouse
-    var down = false, sx = 0, sl = 0, moved = false;
-    reel.addEventListener("pointerdown", function (e) { if (e.pointerType !== "mouse") return; down = true; moved = false; sx = e.clientX; sl = reel.scrollLeft; reel.classList.add("grab"); });
-    window.addEventListener("pointermove", function (e) { if (!down) return; if (Math.abs(e.clientX - sx) > 4) moved = true; reel.scrollLeft = sl - (e.clientX - sx); });
-    window.addEventListener("pointerup", function () { down = false; reel.classList.remove("grab"); });
-  })();
-
-  /* ---------- clock + block height ---------- */
-  var clock = document.getElementById("clock"), block = document.getElementById("block");
-  var fmt = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Karachi", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
-  var tick = function () { clock.textContent = fmt.format(new Date()); };
-  tick(); setInterval(tick, 1000);
-  var dockLinks = [].slice.call(document.querySelectorAll(".dock a"));
-  var secs = dockLinks.map(function (a) { return document.querySelector(a.getAttribute("href")); });
-  var onScroll = function () {
-    var max = document.documentElement.scrollHeight - window.innerHeight;
-    block.textContent = String(Math.round((window.scrollY / Math.max(1, max)) * 999999)).padStart(6, "0");
-    var mid = window.scrollY + window.innerHeight * 0.5, cur = -1;
-    secs.forEach(function (s, i) { if (s && s.offsetTop <= mid) cur = i; });
-    dockLinks.forEach(function (a, i) { a.classList.toggle("on", i === cur); });
-    document.querySelector(".dock").classList.toggle("show", window.scrollY > window.innerHeight * 0.5);
+  var STAGES = [
+    { n: "Awareness", h: "Get seen by the right people", b: [
+      "Paid on Meta, TikTok and Google, with AI-made creative so every audience gets tested against many variations",
+      "Creators and KOLs chosen for trust with their audience, not follower count",
+      "Global campaigns localised into Urdu and English that sound like Pakistan" ] },
+    { n: "Activation", h: "Turn interest into a first action", b: [
+      "University tours and on-ground events with a QR-to-signup loop, so offline turns into measurable online users",
+      "Short education content that removes the fear before the first step",
+      "Landing pages and onboarding tested one variable at a time" ] },
+    { n: "Retention", h: "Give them a reason to stay", b: [
+      "Community channels run daily: answers, AMAs, moderation",
+      "Lifecycle messages tied to what the user actually did",
+      "Local partnerships that make the product useful in daily life" ] },
+    { n: "Advocacy", h: "Make users the channel", b: [
+      "Referral programmes with clear, honest rewards",
+      "Ambassadors from campuses and communities",
+      "User-made content fed back into paid creative" ] }
+  ];
+  var MODES = {
+    create: { c: [255, 91, 46], l: "I make it.", s: "Identities, content, reels and AI-made video." },
+    grow: { c: [185, 242, 58], l: "I grow it.", s: "Paid social, content strategy and community." },
+    build: { c: [134, 114, 255], l: "I build it.", s: "Apps, games and websites, made with AI." }
   };
-  window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
 
-  /* ---------- copy email ---------- */
-  var mail = document.getElementById("mail"), ok = document.getElementById("mail-ok");
-  mail.addEventListener("click", function () {
-    var done = function () { ok.classList.add("on"); setTimeout(function () { ok.classList.remove("on"); }, 1600); };
-    if (navigator.clipboard) navigator.clipboard.writeText("s.syedahmadhassan@gmail.com").then(done, function () { window.location.href = "mailto:s.syedahmadhassan@gmail.com"; });
-    else window.location.href = "mailto:s.syedahmadhassan@gmail.com";
+  /* ---------- smooth scroll ---------- */
+  var lenis = null;
+  if (window.Lenis && !reduce) {
+    lenis = new Lenis({ lerp: 0.11 });
+    (function raf(t) { lenis.raf(t); requestAnimationFrame(raf); })(0);
+  }
+  var go = function (sel) {
+    var el = $(sel); if (!el) return;
+    if (lenis) lenis.scrollTo(el, { duration: 1.2 }); else el.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+  };
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest('a[href^="#"]'); if (!a) return;
+    e.preventDefault(); go(a.getAttribute("href"));
   });
 
-  /* ---------- hero depth chart (canvas) ---------- */
+  /* ---------- loader ---------- */
   (function () {
-    var c = document.querySelector(".depth"), ctx = c.getContext("2d"), w = 0, h = 0, mx = 0.5, t = 0, raf;
-    var size = function () { var d = Math.min(window.devicePixelRatio || 1, 2); w = c.clientWidth; h = c.clientHeight; c.width = w * d; c.height = h * d; ctx.setTransform(d, 0, 0, d, 0, 0); };
-    var steps = 46;
-    var draw = function () {
-      ctx.clearRect(0, 0, w, h);
-      var mid = w * (0.5 + (mx - 0.5) * 0.12), base = h * 0.98;
-      [["rgba(14,159,110,", -1], ["rgba(229,72,77,", 1]].forEach(function (side) {
-        ctx.beginPath(); ctx.moveTo(mid, base);
-        var acc = 0;
-        for (var i = 0; i <= steps; i++) {
-          var n = Math.sin(i * 0.7 + t * 0.6 + side[1]) * 0.5 + Math.sin(i * 0.23 - t * 0.35) * 0.5;
-          acc += (0.9 + n * 0.7) * (h * 0.012) * (1 + i / steps);
-          var x = mid + side[1] * (i / steps) * (w * 0.62), y = base - acc;
-          ctx.lineTo(x, ctx.__py === undefined ? y : ctx.__py); ctx.lineTo(x, y); ctx.__py = y;
-        }
-        ctx.__py = undefined;
-        ctx.lineTo(mid + side[1] * w * 0.62, base); ctx.closePath();
-        ctx.fillStyle = side[0] + "0.07)"; ctx.fill();
-        ctx.strokeStyle = side[0] + "0.5)"; ctx.lineWidth = 1; ctx.stroke();
-      });
-      ctx.strokeStyle = "rgba(11,12,14,.07)"; ctx.lineWidth = 1;
-      for (var g = 1; g < 6; g++) { ctx.beginPath(); ctx.moveTo(0, (h / 6) * g); ctx.lineTo(w, (h / 6) * g); ctx.stroke(); }
-    };
-    var loop = function () { t += 0.016; draw(); raf = requestAnimationFrame(loop); };
-    size(); draw();
-    window.addEventListener("resize", function () { size(); draw(); });
-    window.addEventListener("pointermove", function (e) { mx = e.clientX / window.innerWidth; });
-    if (!reduce) new IntersectionObserver(function (en) { cancelAnimationFrame(raf); if (en[0].isIntersecting) loop(); }).observe(c);
+    var el = $("#loader"), n = $("#load-n"), t0 = performance.now(), D = 1100;
+    if (reduce) { el.remove(); return; }
+    (function tick(t) {
+      var p = clamp((t - t0) / D, 0, 1);
+      n.textContent = ("00" + Math.round(p * 100)).slice(-3);
+      if (p < 1) requestAnimationFrame(tick);
+      else { el.classList.add("done"); setTimeout(function () { el.remove(); }, 1000); }
+    })(t0);
   })();
 
-  /* ---------- crosshair + image peek ---------- */
-  if (fine && !reduce) {
-    var cx = document.querySelector(".cx"), cy = document.querySelector(".cy"), cl = document.querySelector(".cl"), peek = document.querySelector(".peek"), pimg = peek.querySelector("img");
-    window.addEventListener("pointermove", function (e) {
-      cx.style.transform = "translateY(" + e.clientY + "px)"; cy.style.transform = "translateX(" + e.clientX + "px)";
-      cl.style.top = e.clientY + "px"; cl.textContent = ((1 - e.clientY / window.innerHeight) * 100).toFixed(2);
-      peek.style.left = e.clientX + 190 + "px"; peek.style.top = e.clientY + "px";
+  /* ---------- pointer ---------- */
+  var P = { x: innerWidth / 2, y: innerHeight / 2, live: false, t: 0 };
+  addEventListener("pointermove", function (e) { if (e.pointerType === "touch") return; P.x = e.clientX; P.y = e.clientY; P.live = true; P.t = performance.now(); }, { passive: true });
+  if (fine) (function () {
+    var cur = $("#cur"), lab = $("span", cur), x = P.x, y = P.y;
+    (function f() { x += (P.x - x) * 0.22; y += (P.y - y) * 0.22; cur.style.transform = "translate(" + x + "px," + y + "px)"; requestAnimationFrame(f); })();
+    document.addEventListener("pointerover", function (e) {
+      var c = e.target.closest("[data-cur]"), h = e.target.closest("a,button,input,.panel");
+      cur.classList.toggle("lab", !!c); cur.classList.toggle("hov", !c && !!h);
+      if (c) lab.textContent = c.getAttribute("data-cur");
     });
-    document.querySelectorAll("[data-peek]").forEach(function (b) {
-      b.addEventListener("pointerenter", function () { if (b.parentNode.classList.contains("open")) return; pimg.src = b.getAttribute("data-peek"); peek.classList.add("on"); peek.style.scale = "1"; });
-      b.addEventListener("pointerleave", function () { peek.classList.remove("on"); peek.style.scale = ".6"; });
-      b.addEventListener("click", function () { peek.classList.remove("on"); });
-    });
+  })();
+
+  /* ---------- modes ---------- */
+  var mode = "create", line = $("#mode-line"), sub = $("#mode-sub");
+  function setMode(m) {
+    if (m === mode || !MODES[m]) return;
+    mode = m; document.documentElement.setAttribute("data-mode", m);
+    $$(".modes button").forEach(function (b) { b.classList.toggle("on", b.dataset.mode === m); });
+    $$(".panel").forEach(function (p) { p.classList.toggle("on", p.dataset.mode === m); });
+    line.textContent = MODES[m].l; sub.textContent = MODES[m].s;
   }
+  $$(".modes button").forEach(function (b) { b.addEventListener("click", function () { setMode(b.dataset.mode); }); });
+  $$(".panel").forEach(function (p) {
+    p.classList.toggle("on", p.dataset.mode === mode);
+    var pick = function () { setMode(p.dataset.mode); };
+    p.addEventListener("click", pick); p.addEventListener("focus", pick);
+    if (fine) p.addEventListener("pointerenter", pick);
+    p.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } });
+  });
 
-  /* ---------- chat illustration ---------- */
+  /* ---------- hero field: a dot grid that bends away from the pointer ---------- */
   (function () {
-    var feed = document.getElementById("feed"), i = 0;
-    if (!feed) return;
-    var add = function () {
-      var m = CHAT[i % CHAT.length]; i++;
-      var el = document.createElement("div");
-      el.className = "msg " + (m.c || "");
-      el.innerHTML = "<b>" + m.n + "</b>" + m.x;
-      feed.appendChild(el);
-      if (hasGsap && !reduce) gsap.from(el, { y: 18, opacity: 0, duration: 0.5, ease: "power3.out" });
-      while (feed.children.length > 6) feed.removeChild(feed.firstChild);
-    };
-    for (var k = 0; k < 4; k++) add();
-    if (!reduce) new IntersectionObserver(function (en) { clearInterval(feed.__t); if (en[0].isIntersecting) feed.__t = setInterval(add, 1900); }).observe(feed);
-  })();
-
-  /* ---------- scramble the name ---------- */
-  var scramble = function (el, delay) {
-    var text = el.textContent, chars = "▲▼◆01$#%/\\<>+=", frame = 0, total = 26;
-    var run = function () {
-      var out = "";
-      for (var i = 0; i < text.length; i++) {
-        if (text[i] === " ") { out += " "; continue; }
-        out += frame > (i / text.length) * total * 0.8 + 6 ? text[i] : chars[Math.floor(Math.random() * chars.length)];
+    var cv = $("#field"), hero = $("#hero"), g = cv.getContext("2d"), W, H, dpr, on = true, col = MODES.create.c.slice();
+    var size = function () { dpr = Math.min(devicePixelRatio || 1, 2); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * dpr; cv.height = H * dpr; };
+    size(); addEventListener("resize", size);
+    new IntersectionObserver(function (e) { on = e[0].isIntersecting; }).observe(hero);
+    var px = W * 0.7, py = H * 0.4;
+    function draw(t) {
+      requestAnimationFrame(draw);
+      if (!on) return;
+      var r = cv.getBoundingClientRect(), tx, ty;
+      if (P.live && t - P.t < 4000) { tx = P.x - r.left; ty = P.y - r.top; }
+      else { tx = W * (0.5 + 0.34 * Math.cos(t / 2300)); ty = H * (0.48 + 0.3 * Math.sin(t / 1700)); }
+      px += (tx - px) * 0.08; py += (ty - py) * 0.08;
+      var c = MODES[mode].c; for (var k = 0; k < 3; k++) col[k] += (c[k] - col[k]) * 0.08;
+      g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+      var gap = W < 700 ? 24 : 30, R = Math.max(180, Math.min(W, H) * 0.38);
+      for (var y = gap / 2; y < H; y += gap) for (var x = gap / 2; x < W; x += gap) {
+        var dx = x - px, dy = y - py, d = Math.sqrt(dx * dx + dy * dy), f = Math.max(0, 1 - d / R), e = f * f;
+        var ox = d ? dx / d * e * 26 : 0, oy = d ? dy / d * e * 26 : 0;
+        var wob = reduce ? 0 : Math.sin(x * 0.02 + y * 0.016 + t / 1400) * 0.5 + 0.5;
+        var a = 0.1 + wob * 0.07 + e * 0.9, s = 1 + e * 2.4;
+        g.fillStyle = "rgba(" + Math.round(237 + (col[0] - 237) * f) + "," + Math.round(234 + (col[1] - 234) * f) + "," + Math.round(228 + (col[2] - 228) * f) + "," + a + ")";
+        g.fillRect(x + ox - s / 2, y + oy - s / 2, s, s);
       }
-      el.textContent = out; frame++;
-      if (frame <= total + 6) setTimeout(run, 42); else el.textContent = text;
-    };
-    setTimeout(run, delay);
-  };
+    }
+    requestAnimationFrame(draw);
+  })();
 
-  /* ---------- motion ---------- */
-  if (!hasGsap || reduce) return;
-  gsap.registerPlugin(ScrollTrigger);
-  if (typeof window.Lenis !== "undefined") {
-    var lenis = new Lenis({ lerp: 0.11 });
-    lenis.on("scroll", ScrollTrigger.update);
-    gsap.ticker.add(function (tm) { lenis.raf(tm * 1000); });
-    gsap.ticker.lagSmoothing(0);
-    document.addEventListener("click", function (e) {
-      var a = e.target.closest("a[href^='#']"); if (!a) return;
-      var el = document.querySelector(a.getAttribute("href")); if (!el) return;
-      e.preventDefault(); lenis.scrollTo(el, { duration: 1.3 });
+  /* ---------- variable type: letters swell toward the pointer ---------- */
+  $$(".vf").forEach(function (el) {
+    var chars = [];
+    $$(".vl", el).forEach(function (ln) {
+      var txt = ln.textContent; ln.textContent = "";
+      txt.split("").forEach(function (ch) {
+        var s = document.createElement("span");
+        if (ch === " ") s.className = "sp"; else { s.className = "ch"; s.textContent = ch; chars.push({ el: s, k: 0 }); }
+        s.setAttribute("aria-hidden", "true"); ln.appendChild(s);
+      });
     });
-    document.addEventListener("keydown", function (e) {
-      if (e.target.closest("input,textarea") || e.metaKey || e.ctrlKey) return;
-      var n = parseInt(e.key, 10); if (n >= 1 && n <= dockLinks.length) lenis.scrollTo(secs[n - 1], { duration: 1.3 });
+    if (reduce) return;
+    var on = false; new IntersectionObserver(function (e) { on = e[0].isIntersecting; }).observe(el);
+    (function f(t) {
+      requestAnimationFrame(f);
+      if (!on) return;
+      var box = el.getBoundingClientRect(), x, y, R = Math.max(170, innerWidth * 0.2);
+      if (P.live && t - P.t < 4000) { x = P.x; y = P.y; }
+      else { x = box.left + box.width * (0.5 + 0.5 * Math.sin(t / 1500)); y = box.top + box.height * (0.5 + 0.3 * Math.cos(t / 1100)); }
+      var rects = chars.map(function (c) { return c.el.getBoundingClientRect(); });
+      chars.forEach(function (c, i) {
+        var r = rects[i], dx = x - (r.left + r.width / 2), dy = y - (r.top + r.height / 2);
+        var k = Math.max(0, 1 - Math.sqrt(dx * dx + dy * dy) / R); k = k * k * (3 - 2 * k);
+        c.k += (k - c.k) * 0.16;
+        c.el.style.setProperty("--w", Math.round(430 + c.k * 370));
+        c.el.style.setProperty("--d", (75 + c.k * 22).toFixed(1));
+        c.el.style.setProperty("--k", (c.k * c.k).toFixed(3));
+      });
+    })(0);
+  });
+
+  /* ---------- reveal ---------- */
+  var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }); }, { rootMargin: "0px 0px -8% 0px" });
+  var watch = function (r) { $$(".rv", r).forEach(function (el, i) { el.style.transitionDelay = (i % 4) * 60 + "ms"; io.observe(el); }); };
+
+  /* ---------- tilt ---------- */
+  function tilt(el, deg) {
+    if (!fine || reduce) return;
+    el.addEventListener("pointermove", function (e) {
+      var r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      el.style.setProperty("--ry", ((x - 0.5) * deg).toFixed(2) + "deg"); el.style.setProperty("--rx", ((0.5 - y) * deg).toFixed(2) + "deg");
+      el.style.setProperty("--mx", (x * 100).toFixed(1) + "%"); el.style.setProperty("--my", (y * 100).toFixed(1) + "%");
     });
+    el.addEventListener("pointerleave", function () { el.style.setProperty("--rx", "0deg"); el.style.setProperty("--ry", "0deg"); });
   }
+  $$(".panel").forEach(function (p) { tilt(p, 0); });
 
-  // Layout shifts as lazy images and fonts arrive, so keep the scroll triggers in step with it.
-  var rt; var refresh = function () { clearTimeout(rt); rt = setTimeout(function () { ScrollTrigger.refresh(); }, 200); };
-  window.addEventListener("load", refresh);
-  if (window.ResizeObserver) new ResizeObserver(refresh).observe(document.body);
+  /* ---------- reel ---------- */
+  (function () {
+    var reel = $("#reel"), sec = $("#proof");
+    reel.innerHTML = REEL.map(function (r) {
+      var media = r.v
+        ? '<video muted loop playsinline preload="none" poster="media/' + r.v + '.jpg" src="media/' + r.v + '.mp4"></video>'
+        : '<img loading="lazy" src="img/' + r.i + '.jpg" alt="' + esc(r.c + ": " + r.s) + '">';
+      return '<figure class="shot" style="aspect-ratio:' + r.a + '"' + (r.v ? ' data-cur="Playing"' : "") + ">" + media +
+        (r.k ? '<span class="tag">Personal concept</span>' : "") +
+        "<figcaption><b>" + esc(r.c) + '</b><span class="m">' + esc(r.s) + "</span></figcaption></figure>";
+    }).join("");
+    $$(".shot", reel).forEach(function (s) { tilt(s, 7); });
+    var vio = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { var p = e.target.play(); if (p && p.catch) p.catch(function () {}); } else e.target.pause(); }); }, { threshold: 0.4 });
+    $$("video", reel).forEach(function (v) { vio.observe(v); });
 
-  document.querySelectorAll(".scr").forEach(function (el, i) { scramble(el, 150 + i * 220); });
-  gsap.from(".hero .eyebrow, .pitch, .ticket, .tape", { y: 24, opacity: 0, duration: 1, stagger: 0.09, ease: "expo.out", delay: 0.5 });
-  gsap.to(".name", { yPercent: -14, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
+    var mq = matchMedia("(pointer: fine) and (min-width: 900px)"), over = 0;
+    function measure() {
+      if (!mq.matches) { sec.style.height = ""; reel.style.transform = ""; over = 0; return; }
+      over = Math.max(0, reel.scrollWidth - innerWidth);
+      sec.style.height = innerHeight + over + "px"; place();
+    }
+    function place() {
+      if (!over) return;
+      var p = clamp((scrollY - sec.offsetTop) / over, 0, 1);
+      reel.style.transform = "translate3d(" + (-p * over).toFixed(1) + "px,0,0)";
+    }
+    measure(); addEventListener("resize", measure); addEventListener("load", measure);
+    addEventListener("scroll", place, { passive: true });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+  })();
 
-  document.querySelectorAll("h2").forEach(function (h) {
-    gsap.to(h.querySelectorAll(".ln > span"), { y: 0, duration: 1.1, stagger: 0.09, ease: "expo.out", scrollTrigger: { trigger: h, start: "top 86%" } });
-  });
-  ScrollTrigger.batch(".rv", { start: "top 92%", onEnter: function (els) { gsap.to(els, { opacity: 1, y: 0, duration: 0.9, stagger: 0.06, ease: "expo.out", overwrite: true }); } });
-  gsap.from(".does li", { y: 20, opacity: 0, duration: 0.7, stagger: 0.04, ease: "expo.out", scrollTrigger: { trigger: ".does", start: "top 90%" } });
-  gsap.utils.toArray(".row").forEach(function (r) {
-    gsap.to(r.querySelector(".track i"), { scaleX: 1, duration: 1.2, ease: "expo.out", scrollTrigger: { trigger: r, start: "top 88%" } });
-  });
-  gsap.from(".mkt b", { yPercent: 40, opacity: 0, duration: 1.2, ease: "expo.out", scrollTrigger: { trigger: ".mkt", start: "top 85%" } });
-  ScrollTrigger.create({ onUpdate: function (s) { gsap.to(".tools-in span", { skewX: gsap.utils.clamp(-16, 16, s.getVelocity() / -160), duration: 0.3, overwrite: true }); } });
-  ScrollTrigger.addEventListener("scrollEnd", function () { gsap.to(".tools-in span", { skewX: 0, duration: 0.6, overwrite: true }); });
+  /* ---------- work ---------- */
+  (function () {
+    var box = $("#cards"), sheet = $("#sheet"), inner = $("#sheet-in"), last = null;
+    box.innerHTML = WORK.map(function (w, i) {
+      return '<button type="button" class="card rv' + (w.w ? " w" : "") + '" data-i="' + i + '" data-tags="' + w.tags.join(" ") + '" data-cur="Open">' +
+        '<img loading="lazy" src="img/' + w.img[0] + '.jpg" alt="">' +
+        '<span class="card-y m"><span>' + esc(w.y) + "</span><span>" + (w.concept ? "Personal concept" : esc(w.role)) + "</span></span>" +
+        '<span class="card-t"><b>' + esc(w.t) + '</b><span class="m">' + esc(w.k) + "</span></span></button>";
+    }).join("");
+    $$(".card", box).forEach(function (c) { tilt(c, 6); c.addEventListener("click", function () { open(+c.dataset.i, c); }); });
+    $$("#filters button").forEach(function (b) {
+      b.addEventListener("click", function () {
+        $$("#filters button").forEach(function (x) { x.classList.toggle("on", x === b); });
+        var f = b.dataset.f;
+        $$(".card", box).forEach(function (c) { c.classList.toggle("off", f !== "all" && c.dataset.tags.split(" ").indexOf(f) < 0); });
+        if (f !== "all") setMode(f);
+      });
+    });
+    function open(i, from) {
+      var w = WORK[i]; last = from;
+      inner.innerHTML = "<div>" + (w.concept ? '<span class="m concept">Personal concept · not client work</span>' : "") + "<h2>" + esc(w.t) + "</h2></div>" +
+        '<div class="sheet-meta"><p>' + esc(w.d) + "</p><dl>" +
+        '<div><dt class="m">Year</dt><dd>' + esc(w.y) + "</dd></div>" +
+        '<div><dt class="m">Role</dt><dd>' + esc(w.role) + "</dd></div>" +
+        '<div><dt class="m">Scope</dt><dd>' + esc(w.svc) + "</dd></div></dl></div>" +
+        '<div class="sheet-imgs">' + w.img.map(function (m) { return '<img src="img/' + m + '.jpg" alt="' + esc(w.t) + '">'; }).join("") + "</div>";
+      sheet.hidden = false; inner.scrollTop = 0; if (lenis) lenis.stop(); document.body.style.overflow = "hidden"; $("#sheet-x").focus();
+    }
+    function close() { if (sheet.hidden) return; sheet.hidden = true; if (lenis) lenis.start(); document.body.style.overflow = ""; if (last) last.focus(); }
+    $("#sheet-x").addEventListener("click", close);
+    addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
+  })();
 
-  if (fine) document.querySelectorAll(".mag").forEach(function (m) {
-    var x = gsap.quickTo(m, "x", { duration: 0.5, ease: "power3" }), y = gsap.quickTo(m, "y", { duration: 0.5, ease: "power3" });
-    m.addEventListener("pointermove", function (e) { var r = m.getBoundingClientRect(); x((e.clientX - r.left - r.width / 2) * 0.12); y((e.clientY - r.top - r.height / 2) * 0.2); });
-    m.addEventListener("pointerleave", function () { x(0); y(0); });
-  });
+  /* ---------- experience ---------- */
+  (function () {
+    var box = $("#roles");
+    box.innerHTML = ROLES.map(function (r, i) {
+      return '<div class="role' + (i === 0 ? " open" : "") + '"><button type="button" class="role-h" aria-expanded="' + (i === 0) + '">' +
+        '<span class="m' + (r.live ? " live" : "") + '">' + esc(r.y) + "</span><b>" + esc(r.t) + '</b><span class="org">' + esc(r.o) + '</span><span class="pm">+</span></button>' +
+        '<div class="role-b"><div><ul>' + r.b.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></div></div></div>";
+    }).join("");
+    $$(".role", box).forEach(function (r) {
+      $(".role-h", r).addEventListener("click", function () {
+        var was = r.classList.contains("open");
+        $$(".role", box).forEach(function (x) { x.classList.remove("open"); $(".role-h", x).setAttribute("aria-expanded", "false"); });
+        if (!was) { r.classList.add("open"); $(".role-h", r).setAttribute("aria-expanded", "true"); }
+      });
+    });
+  })();
+
+  /* ---------- growth lab ---------- */
+  (function () {
+    var tabs = $("#stages"), body = $("#stage-body");
+    tabs.innerHTML = STAGES.map(function (s, i) { return '<button type="button" role="tab" data-i="' + i + '"><span class="m">0' + (i + 1) + "</span><b>" + s.n + "</b></button>"; }).join("");
+    function show(i) {
+      var s = STAGES[i];
+      $$("button", tabs).forEach(function (b, j) { b.classList.toggle("on", j === i); b.setAttribute("aria-selected", j === i); });
+      body.innerHTML = "<h3>" + esc(s.h) + "</h3><ul>" + s.b.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>";
+    }
+    $$("button", tabs).forEach(function (b) { b.addEventListener("click", function () { show(+b.dataset.i); }); });
+    show(0);
+
+    var S = [
+      { id: "budget", l: "Monthly ad budget", min: 100000, max: 10000000, step: 100000, v: 1000000, f: function (v) { return "PKR " + v.toLocaleString("en-US"); } },
+      { id: "cpc", l: "Cost per click", min: 5, max: 100, step: 1, v: 20, f: function (v) { return "PKR " + v; } },
+      { id: "su", l: "Clicks that sign up", min: 1, max: 30, step: 1, v: 8, f: function (v) { return v + "%"; } },
+      { id: "ac", l: "Sign-ups that take a first action", min: 5, max: 80, step: 1, v: 35, f: function (v) { return v + "%"; } },
+      { id: "re", l: "Still active after 30 days", min: 5, max: 80, step: 1, v: 30, f: function (v) { return v + "%"; } }
+    ];
+    var sl = $("#sliders"), out = $("#sim-out");
+    sl.innerHTML = S.map(function (s) { return '<div class="sl"><label for="s-' + s.id + '"><span>' + s.l + '</span><output id="o-' + s.id + '"></output></label><input type="range" id="s-' + s.id + '" min="' + s.min + '" max="' + s.max + '" step="' + s.step + '" value="' + s.v + '"></div>'; }).join("");
+    out.innerHTML = ["Clicks", "Sign-ups", "Active users", "Retained at 30 days"].map(function (n) { return '<div class="bar-row"><i></i><span>' + n + "</span><b>0</b></div>"; }).join("") +
+      '<div class="kpi"><div><span class="m">Cost per active user</span><b id="k1"></b></div><div><span class="m">Cost per retained user</span><b id="k2"></b></div></div>';
+    var rows = $$(".bar-row", out), n = function (v) { return Math.round(v).toLocaleString("en-US"); };
+    function calc() {
+      var v = {}; S.forEach(function (s) { var el = $("#s-" + s.id); v[s.id] = +el.value; $("#o-" + s.id).textContent = s.f(v[s.id]); el.style.setProperty("--p", ((v[s.id] - s.min) / (s.max - s.min) * 100) + "%"); });
+      var c = v.budget / v.cpc, a = [c, c * v.su / 100, c * v.su / 100 * v.ac / 100, c * v.su / 100 * v.ac / 100 * v.re / 100];
+      rows.forEach(function (r, i) { $("b", r).textContent = n(a[i]); $("i", r).style.setProperty("--w", Math.max(3, Math.pow(a[i] / a[0], 0.36) * 100) + "%"); });
+      $("#k1").textContent = "PKR " + n(v.budget / a[2]); $("#k2").textContent = "PKR " + n(v.budget / a[3]);
+    }
+    sl.addEventListener("input", calc); calc();
+  })();
+
+  /* ---------- the case: one row lit at a time ---------- */
+  (function () {
+    var ol = $("#args"), items = $$("li", ol);
+    var light = function (li) { ol.classList.toggle("dim", !!li); items.forEach(function (x) { x.classList.toggle("lit", x === li); }); };
+    if (fine) { items.forEach(function (li) { li.addEventListener("pointerenter", function () { light(li); }); }); ol.addEventListener("pointerleave", function () { light(null); }); }
+    else addEventListener("scroll", function () {
+      var mid = innerHeight * 0.5, best = null, bd = 1e9, r = ol.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > innerHeight) return light(null);
+      items.forEach(function (li) { var b = li.getBoundingClientRect(), d = Math.abs(b.top + b.height / 2 - mid); if (d < bd) { bd = d; best = li; } });
+      light(best);
+    }, { passive: true });
+  })();
+
+  /* ---------- contact ---------- */
+  var copyMail = function () {
+    var b = $("#mail"), done = function () { b.classList.add("ok"); setTimeout(function () { b.classList.remove("ok"); }, 1800); };
+    if (navigator.clipboard) navigator.clipboard.writeText("s.syedahmadhassan@gmail.com").then(done, function () { location.href = "mailto:s.syedahmadhassan@gmail.com"; });
+    else location.href = "mailto:s.syedahmadhassan@gmail.com";
+  };
+  $("#mail").addEventListener("click", copyMail);
+
+  /* ---------- progress ---------- */
+  var prog = $("#prog");
+  addEventListener("scroll", function () { prog.style.transform = "scaleX(" + clamp(scrollY / Math.max(1, document.documentElement.scrollHeight - innerHeight), 0, 1) + ")"; }, { passive: true });
+
+  /* ---------- menu ---------- */
+  (function () {
+    var pal = $("#pal"), q = $("#pal-q"), list = $("#pal-list"), sel = 0, shown = [];
+    var ITEMS = [
+      { n: "What I do", k: "Go", f: function () { go("#what"); } }, { n: "Evidence", k: "Go", f: function () { go("#proof"); } },
+      { n: "Selected work", k: "Go", f: function () { go("#work"); } }, { n: "Experience", k: "Go", f: function () { go("#xp"); } },
+      { n: "How I'd grow a brand", k: "Go", f: function () { go("#lab"); } }, { n: "Why hire me", k: "Go", f: function () { go("#why"); } },
+      { n: "Contact", k: "Go", f: function () { go("#contact"); } },
+      { n: "Copy email address", k: "Do", f: function () { go("#contact"); copyMail(); } },
+      { n: "Download résumé", k: "Do", f: function () { window.open("Syed_Ahmad_Hassan_Resume.pdf", "_blank"); } },
+      { n: "Message on WhatsApp", k: "Do", f: function () { window.open("https://wa.me/923082612601", "_blank"); } },
+      { n: "Mode: Create", k: "Look", f: function () { setMode("create"); } }, { n: "Mode: Grow", k: "Look", f: function () { setMode("grow"); } }, { n: "Mode: Build", k: "Look", f: function () { setMode("build"); } }
+    ];
+    function render() {
+      var s = q.value.trim().toLowerCase();
+      shown = ITEMS.filter(function (i) { return i.n.toLowerCase().indexOf(s) >= 0; }); sel = clamp(sel, 0, Math.max(0, shown.length - 1));
+      list.innerHTML = shown.map(function (i, j) { return '<li data-j="' + j + '"' + (j === sel ? ' class="sel"' : "") + "><span>" + i.n + '</span><span class="m">' + i.k + "</span></li>"; }).join("");
+      var el = $(".sel", list); if (el) el.scrollIntoView({ block: "nearest" });
+    }
+    function open() { pal.hidden = false; q.value = ""; sel = 0; render(); if (lenis) lenis.stop(); if (fine) q.focus(); }
+    function close() { if (pal.hidden) return; pal.hidden = true; if (lenis && $("#sheet").hidden) lenis.start(); }
+    function run(j) { var it = shown[j]; close(); if (it) it.f(); }
+    $("#menu-btn").addEventListener("click", open);
+    pal.addEventListener("click", function (e) { var li = e.target.closest("li"); if (li) run(+li.dataset.j); else if (e.target === pal) close(); });
+    list.addEventListener("pointermove", function (e) { var li = e.target.closest("li"); if (li && +li.dataset.j !== sel) { sel = +li.dataset.j; render(); } });
+    q.addEventListener("input", function () { sel = 0; render(); });
+    addEventListener("keydown", function (e) {
+      var typing = /INPUT|TEXTAREA/.test(document.activeElement.tagName);
+      if ((e.key === "k" || e.key === "K") && (e.metaKey || e.ctrlKey || !typing) && pal.hidden) { e.preventDefault(); open(); return; }
+      if (pal.hidden) return;
+      if (e.key === "Escape") close();
+      else if (e.key === "ArrowDown") { e.preventDefault(); sel = (sel + 1) % Math.max(1, shown.length); render(); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); sel = (sel - 1 + shown.length) % Math.max(1, shown.length); render(); }
+      else if (e.key === "Enter") { e.preventDefault(); run(sel); }
+    });
+  })();
+
+  watch(document);
 })();
