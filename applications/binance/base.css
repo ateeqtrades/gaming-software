@@ -20,8 +20,8 @@ li::before { content: ""; position: absolute; left: 0; top: .62em; width: 1.3mm;
 .kv p { padding: 1mm 0; border-top: .2mm solid #d9dadd; }
 .kv b { font-weight: 600; }
 /* letter */
-.letter { font-size: 10pt; line-height: 1.52; }
-.letter p { margin-top: 3.6mm; }
+.letter { font-size: 10.6pt; line-height: 1.6; }
+.letter p { margin-top: 4.4mm; }
 .letter .meta { margin-top: 6mm; color: #44474d; font-size: 9.4pt; }
 .letter h3 { font-size: 12pt; font-weight: 600; letter-spacing: -.01em; margin-top: 5.5mm; }
 .letter ul { margin-top: 2.4mm; } .letter li { margin-top: 1.4mm; }
