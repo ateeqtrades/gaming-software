@@ -11,7 +11,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23070708'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23FF5B2E'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=Instrument+Serif:ital@1&family=Martian+Mono:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=Inter:wght@400&family=Space+Grotesk:wght@500&family=JetBrains+Mono:wght@400&family=Instrument+Serif:ital@1&family=Martian+Mono:wght@300;400;500&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -79,23 +79,65 @@
 
   <section class="dxl" id="dxl">
     <div class="wrap">
-      <p class="m eyebrow rv">02 · Right now</p>
-      <h2 class="big rv">Building DXL <em>from zero.</em></h2>
-      <div class="dxl-grid">
-        <div class="dxl-l">
-          <p class="dxl-lede rv">DXL is an institute in Karachi teaching crypto, forex, PSX, international equities, Web3 and AI as one connected pathway. I joined in August 2026 as Head of Brand Experience, with the brand starting from scratch.</p>
-          <ul class="dxl-list">
-            <li class="rv"><span class="m">Launch</span><div><b>Nine-post Instagram launch grid</b><p>3D object renders made with AI, with the logo and type composited in code so every tile stays on brand.</p></div></li>
-            <li class="rv"><span class="m">System</span><div><b>The brand, applied</b><p>Colour, type and the Vertex mark carried across social, print and web, with rules for what the brand never says.</p></div></li>
-            <li class="rv"><span class="m">Motion</span><div><b>Logo sting</b><p>A six-second animated logo for video, in landscape and vertical.</p></div></li>
-            <li class="rv"><span class="m">Print</span><div><b>Leadership business cards</b><p>A 3D glass render of the mark, built from the official vector.</p></div></li>
-            <li class="rv"><span class="m">Plan</span><div><b>Launch plan</b><p>Three phases: build proof, create demand, convert. Each with a number that decides whether we move on.</p></div></li>
+      <div class="dxl-top">
+        <div>
+          <p class="m eyebrow rv">02 · Right now · DXL</p>
+          <h2 class="big rv">Building a brand <em>from zero.</em></h2>
+          <p class="dxl-lede rv">DXL is an institute in Karachi teaching crypto, forex, PSX, international equities, Web3 and AI as one connected pathway. I joined in August 2026 as Head of Brand Experience, with the brand starting from scratch. This is what it looks like now.</p>
+          <ul class="dxl-facts rv">
+            <li><span class="m">Role</span><b>Head of Brand Experience</b></li>
+            <li><span class="m">Since</span><b>August 2026</b></li>
+            <li><span class="m">Scope</span><b>Identity, website, social, motion, print</b></li>
           </ul>
-          <button type="button" class="dxl-open rv" id="dxl-open" data-cur="Open">See all DXL work <i>→</i></button>
         </div>
-        <div class="dxl-r rv">
+        <div class="coin rv" id="coin" aria-hidden="true"><img src="img/dxl-coin.webp" alt=""></div>
+      </div>
+
+      <div class="dxl-web rv">
+        <p class="m dxl-lab"><span>The website</span><a href="https://www.dxl.academy" target="_blank" rel="noopener">www.dxl.academy ↗</a></p>
+        <div class="dxl-web-in">
+          <div class="browser" id="browser" data-cur="Scroll">
+            <div class="chrome"><i></i><i></i><i></i><span>dxl.academy</span></div>
+            <div class="view"><img loading="lazy" src="img/dxl-site.jpg" alt="The DXL website, full page"></div>
+          </div>
+          <div class="phone"><img loading="lazy" src="img/dxl-site-m.jpg" alt="The DXL website on a phone"></div>
+        </div>
+        <p class="m dxl-cap"><span class="fine">Move your cursor up and down the screen to scroll the site.</span><span class="coarse">The live site, scrolling.</span></p>
+      </div>
+
+      <p class="m dxl-lab rv"><span>The identity</span><span>One mark · three blues · three typefaces</span></p>
+      <div class="dxl-id">
+        <div class="id-card id-mark rv"><svg viewBox="0 0 239.2 238.8" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M161.4,128.2 128.4,161.0 128.4,161.4 176.8,209.8 206.0,238.6 239.0,205.6ZM77.6,128.2 31.0,174.4 0.0,205.6 32.8,238.6 33.2,238.6 110.6,161.2ZM119.4,99.0 99.4,118.8 99.2,119.4 119.6,139.6 139.6,119.6 139.6,119.0ZM206.0,0.0 186.8,18.8 128.4,77.2 128.4,77.6 161.4,110.4 239.0,33.0ZM32.8,0.0 0.0,33.0 20.2,53.4 77.6,110.4 110.6,77.4 33.2,0.0Z"/></svg><div><b>The Vertex</b><p>Four bars and a diamond where they cross. One colour. Never rotated, stretched or boxed in a circle.</p></div></div>
+        <div class="id-card id-col rv">
+          <div class="sw" id="sw">
+            <button type="button" style="--c:#101145;flex:7" data-hex="#101145" data-cur="Copy"><b>Midnight</b><span>#101145 · 70%</span></button>
+            <button type="button" style="--c:#053887;flex:2" data-hex="#053887" data-cur="Copy"><b>Deep Blue</b><span>#053887 · 20%</span></button>
+            <button type="button" style="--c:#2056AB;flex:1" data-hex="#2056AB" data-cur="Copy"><b>Electric</b><span>#2056AB · 10%</span></button>
+          </div>
+          <p class="m" id="sw-note">Tap a colour to copy it. No sixth colour, ever.</p>
+        </div>
+        <div class="id-card id-type rv">
+          <p class="t1">Trading is a skill.</p>
+          <p class="t2">Members, not users. Precise, institutional, rooted in Karachi.</p>
+          <p class="t3">SPACE GROTESK · INTER · JETBRAINS MONO</p>
+        </div>
+        <div class="id-card id-voice rv"><span class="m">How it speaks</span><p id="voice">Web3 is a lens.</p></div>
+      </div>
+
+      <p class="m dxl-lab rv"><span>The launch</span><span>Instagram · print · motion</span></p>
+      <div class="dxl-out">
+        <div class="rv">
           <div class="tiles" id="tiles"></div>
-          <p class="m tiles-note">The launch grid, as it appears on Instagram. <span class="fine">Hover a tile.</span><span class="coarse">Tap a tile.</span></p>
+          <p class="m tiles-note">The nine-post launch grid, as it appears on Instagram. 3D renders made with AI, logo and type composited in code.</p>
+        </div>
+        <div class="dxl-side">
+          <figure class="bcard rv" id="bcard"><img loading="lazy" src="img/dxl-card.jpg" alt="DXL business card with a 3D glass render of the mark"><figcaption class="m">Leadership business cards · 3D glass render built from the official vector</figcaption></figure>
+          <ul class="dxl-list">
+            <li class="rv"><span class="m">Motion</span><div><b>Logo sting</b><p>Six seconds, landscape and vertical.</p></div></li>
+            <li class="rv"><span class="m">Plan</span><div><b>Launch plan</b><p>Build proof, create demand, convert. Each phase has a number that decides whether we move on.</p></div></li>
+            <li class="rv"><span class="m">Rules</span><div><b>Brand guard</b><p>What the brand never says: no promises of profit, no hype, no borrowed credibility.</p></div></li>
+          </ul>
+          <button type="button" class="dxl-open rv" id="dxl-open" data-cur="Open">Open the DXL project <i>→</i></button>
         </div>
       </div>
     </div>

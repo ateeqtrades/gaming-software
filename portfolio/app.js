@@ -27,13 +27,7 @@
       img: ["ai-1", "ai-2", "ai-3"] },
     { t: "Moorish Construction", k: "Brand identity", y: "2025", role: "Creative direction", svc: "Brand design", tags: ["create"], w: true,
       d: "Led the brand design alone, end to end: positioning, visual language and messaging for a construction and real estate company that needed to look as reliable as it builds.",
-      img: ["moorish-0", "moorish-1", "moorish-3"] },
-    { t: "H23", k: "Web3 agency identity", y: "2023", role: "Creative direction", svc: "Brand design", tags: ["create"], w: true, concept: true,
-      d: "A self-initiated identity for a fictional Web3 agency. Not client work. I made it to practise building a brand for blockchain, crypto and NFTs: monochrome, clean lines, high-tech without the clichés.",
-      img: ["h23-0", "h23-1", "h23-2"] },
-    { t: "Glod Water", k: "Luxury packaging", y: "2022", role: "Creative director", svc: "Brand design, product rendering", tags: ["create"], concept: true,
-      d: "A self-initiated luxury water brand. Not client work. Logo, packaging and renders for a product that sells indulgence as much as hydration.",
-      img: ["glod-3", "glod-1", "glod-0"] }
+      img: ["moorish-0", "moorish-1", "moorish-3"] }
   ];
   var REEL = [
     { v: "ai-1", a: "9/16", c: "AI Content", s: "UGC-style video, made with AI tools" },
@@ -46,9 +40,7 @@
     { i: "cosmic-2", a: "5/4", c: "Cosmic Computers", s: "Campaign creative" },
     { i: "moorish-0", a: "16/10", c: "Moorish Construction", s: "Brand identity, 2025" },
     { i: "ai-2", a: "4/5", c: "AI Content", s: "AI product visuals" },
-    { i: "bagh-0", a: "16/10", c: "Bagh Mining & Minerals", s: "Website, via Middlemen, 2026" },
-    { i: "h23-0", a: "1/1", c: "H23", s: "Concept identity, 2023", k: true },
-    { i: "glod-3", a: "2/3", c: "Glod Water", s: "Concept packaging, 2022", k: true }
+    { i: "bagh-0", a: "16/10", c: "Bagh Mining & Minerals", s: "Website, via Middlemen, 2026" }
   ];
   var ROLES = [
     { y: "2026 to now", t: "Head of Brand Experience", o: "DXL", live: true, b: [
@@ -300,6 +292,33 @@
     function close() { if (sheet.hidden) return; sheet.hidden = true; if (lenis) lenis.start(); document.body.style.overflow = ""; if (last) last.focus(); }
     $("#sheet-x").addEventListener("click", close);
     addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
+  })();
+
+  /* ---------- dxl showcase ---------- */
+  (function () {
+    var coin = $("#coin"), sec = $("#dxl");
+    if (fine && !reduce) sec.addEventListener("pointermove", function (e) {
+      var r = coin.getBoundingClientRect(), x = (e.clientX - (r.left + r.width / 2)) / innerWidth, y = (e.clientY - (r.top + r.height / 2)) / innerHeight;
+      coin.style.setProperty("--ry", clamp(x * 46, -24, 24).toFixed(1) + "deg"); coin.style.setProperty("--rx", clamp(-y * 40, -20, 20).toFixed(1) + "deg");
+    });
+    var br = $("#browser"), img = $("img", br), view = $(".view", br);
+    if (fine) br.addEventListener("pointermove", function (e) {
+      var r = view.getBoundingClientRect(), p = clamp((e.clientY - r.top) / r.height, 0, 1);
+      img.style.setProperty("--y", (-p * Math.max(0, img.offsetHeight - r.height)).toFixed(0) + "px");
+    });
+    tilt($("#bcard"), 12);
+    var note = $("#sw-note"), base = note.textContent;
+    $$("#sw button").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var hex = b.dataset.hex, ok = function () { note.textContent = "Copied " + hex; setTimeout(function () { note.textContent = base; }, 1600); };
+        if (navigator.clipboard) navigator.clipboard.writeText(hex).then(ok, ok); else ok();
+      });
+    });
+    var lines = ["Web3 is a lens.", "Every seat here is earned.", "Every market. One pathway.", "Adoption is not the problem. Structure is.", "Trading is a skill."], vi = 0, v = $("#voice");
+    if (!reduce) setInterval(function () {
+      v.classList.add("out");
+      setTimeout(function () { vi = (vi + 1) % lines.length; v.textContent = lines[vi]; v.classList.remove("out"); }, 420);
+    }, 2800);
   })();
 
   /* ---------- experience ---------- */
